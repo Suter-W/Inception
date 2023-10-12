@@ -20,4 +20,8 @@ public class Dream {
     private short dreamStatus;
 
     private Integer likeCount;
+
+    private Boolean isLike = false;
+
+    private Boolean isFavorite = false;
 }

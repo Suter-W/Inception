@@ -19,6 +19,11 @@ public class DreamPublishController {
     @Autowired
     private DreamPublishService dreamPublishService;
 
+    /**
+     * 用户发布梦境
+     * @param dream
+     * @return
+     */
     @PostMapping("/publishDream")
     public Result publishDream(@RequestBody Dream dream){
         log.info("用户发布梦境,用户：",dream.getUserID());

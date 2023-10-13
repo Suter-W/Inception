@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/World")
@@ -30,7 +31,7 @@ public class DreamWorldController {
      * @return
      */
     @GetMapping("/getDreamList")
-    public Result getDreamList(@RequestParam Integer userID){
+    public Result getDreamList(@RequestParam Integer userID) {
         log.info("获取所有公开梦境,并且获取每个梦境该用户是否点赞或收藏");
         List<Dream> dreams = dreamWorldService.getDreamList();
         List<Like> likes = dreamWorldService.userLikeList(userID);
@@ -58,7 +59,7 @@ public class DreamWorldController {
         List<User> users = getUserInfoByIDs(userIDs);
         for(Dream dream : dreams){
             for(User user : users){
-                if(dream.getUserID() == user.getUserID()){
+                if(Objects.equals(dream.getUserID(), user.getUserID())){
                     dream.setUserName(user.getUserName());
                     dream.setUserAvatar(user.getUserAvatar());
                 }
@@ -98,4 +99,19 @@ public class DreamWorldController {
         dreamWorldService.cancelFavorite(dreamID,userID);
         return Result.success();
     }
+
+    @GetMapping("/getDreamCommentList")
+    public Result getDreamCommentList(@RequestParam Integer dreamID){
+        log.info("获取梦境的评论");
+        List<Comment> commentList = dreamWorldService.getDreamCommentList(dreamID);
+        return Result.success(commentList);
+    }
+
+    @PostMapping("/publishComment")
+    public Result publishComment(@RequestBody Comment comment){
+        log.info("新增评论：{}",comment);
+        dreamWorldService.publishComment(comment);
+        return Result.success();
+    }
+
 }

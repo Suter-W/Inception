@@ -1,9 +1,6 @@
 package com.inception.backend.mapper;
 
-import com.inception.backend.pojo.Dream;
-import com.inception.backend.pojo.Favorite;
-import com.inception.backend.pojo.Like;
-import com.inception.backend.pojo.User;
+import com.inception.backend.pojo.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -39,4 +36,10 @@ public interface DreamWorldMapper {
 
     @Select("select * from user where userID = #{userID}")
     User getUserInfoByID(Integer userID);
+
+    @Select("select * from comment where dreamID = #{dreamID}")
+    List<Comment> getDreamCommentList(Integer dreamID);
+
+    @Insert("insert into comment (dreamID, userID, commentTime, commentContent) values (#{dreamID},#{userID},#{commentTime},#{commentContent})")
+    void publishComment(Comment comment);
 }

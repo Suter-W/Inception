@@ -30,4 +30,6 @@ public class DreamPublishController {
         dreamPublishService.publishDream(dream);
         return Result.success();
     }
+
+
 }

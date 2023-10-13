@@ -1,10 +1,7 @@
 package com.inception.backend.service.serviceImpl;
 
 import com.inception.backend.mapper.DreamWorldMapper;
-import com.inception.backend.pojo.Dream;
-import com.inception.backend.pojo.Favorite;
-import com.inception.backend.pojo.Like;
-import com.inception.backend.pojo.User;
+import com.inception.backend.pojo.*;
 import com.inception.backend.service.DreamWorldService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,4 +59,19 @@ public class DreamWorldServiceImpl implements DreamWorldService {
         }
         return users;
     }
+
+    @Override
+    public List<Comment> getDreamCommentList(Integer dreamID) {
+        return dreamWorldMapper.getDreamCommentList(dreamID);
+    }
+
+    @Override
+    public void publishComment(Comment comment) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String commentTime = LocalDateTime.now().format(formatter);
+        comment.setCommentTime(commentTime);
+        dreamWorldMapper.publishComment(comment);
+    }
+
+
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/World")
@@ -58,7 +59,7 @@ public class DreamWorldController {
         List<User> users = getUserInfoByIDs(userIDs);
         for(Dream dream : dreams){
             for(User user : users){
-                if(dream.getUserID() == user.getUserID()){
+                if(Objects.equals(dream.getUserID(), user.getUserID())){
                     dream.setUserName(user.getUserName());
                     dream.setUserAvatar(user.getUserAvatar());
                 }

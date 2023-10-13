@@ -1,0 +1,48 @@
+*{
+  padding: 0;
+  margin: 0;
+}
+/* 改变主题色变量 */
+$--color-primary: #443B77;
+
+/* 改变 icon 字体路径变量，必需 */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+
+
+.el-button{
+  width: 100%;
+  height: 52px;
+  padding: 10px 20px;
+  box-shadow: 0 2px 9px 1px $--color-primary;
+  border-radius: 8px;
+  border: 0px;
+  span {
+    font-size: 16px;
+    color: #fff;
+  }
+}
+.el-button--default{
+  
+  span {
+    color: #000;
+  }
+}
+.el-collapse-item__header,.el-collapse,.el-collapse-item__wrap{
+  border:none !important
+}
+// .el-collapse-item__header.is-active,.el-collapse-item__wrap{
+//   border-bottom: 1px solid #DCDFE6 !important
+// }
+.el-card {
+  box-shadow:10px 10px 20px 0px $--color-primary !important;
+  padding: 20px 35px !important;
+  background-color: #fff !important;
+  border-radius: 10px !important;
+}
+.el-dialog{
+  box-shadow:5px 2px 9px 1px $--color-primary !important;
+  padding: 20px 35px !important;
+  background-color: #fff !important;
+  border-radius: 10px !important;
+}
+@import "~element-ui/packages/theme-chalk/src/index";

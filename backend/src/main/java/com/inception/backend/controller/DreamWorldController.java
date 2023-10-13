@@ -1,10 +1,7 @@
 package com.inception.backend.controller;
 
 
-import com.inception.backend.pojo.Dream;
-import com.inception.backend.pojo.Favorite;
-import com.inception.backend.pojo.Like;
-import com.inception.backend.pojo.Result;
+import com.inception.backend.pojo.*;
 import com.inception.backend.service.DreamWorldService;
 import jakarta.annotation.security.PermitAll;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +21,10 @@ public class DreamWorldController {
     @Autowired
     private DreamWorldService dreamWorldService;
 
+    private List<User> getUserInfoByIDs(List<Integer> userIDs){
+        List<User> users = dreamWorldService.getUserInfoByIDs(userIDs);
+        return users;
+    }
     /**
      * 打开主页时取出所有梦境,并且判断每个梦境是否被该用户收藏或点赞
      * @return
@@ -36,6 +37,7 @@ public class DreamWorldController {
         List<Favorite> favorites = dreamWorldService.userFavoriteList(userID);
         List<Integer> likeDreamIDs = new ArrayList<>();
         List<Integer> favoriteDreamIDs = new ArrayList<>();
+        List<Integer> userIDs = new ArrayList<>();
         for (Like like : likes) {
             likeDreamIDs.add(like.getDreamID());
         }
@@ -48,6 +50,18 @@ public class DreamWorldController {
             }
             if(favoriteDreamIDs.contains(dream.getDreamID())){
                 dream.setIsFavorite(true);
+            }
+            if(!userIDs.contains(dream.getUserID())){
+                userIDs.add(dream.getUserID());
+            }
+        }
+        List<User> users = getUserInfoByIDs(userIDs);
+        for(Dream dream : dreams){
+            for(User user : users){
+                if(dream.getUserID() == user.getUserID()){
+                    dream.setUserName(user.getUserName());
+                    dream.setUserAvatar(user.getUserAvatar());
+                }
             }
         }
         return Result.success(dreams);

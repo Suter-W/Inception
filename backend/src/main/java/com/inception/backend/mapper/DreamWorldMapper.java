@@ -3,6 +3,7 @@ package com.inception.backend.mapper;
 import com.inception.backend.pojo.Dream;
 import com.inception.backend.pojo.Favorite;
 import com.inception.backend.pojo.Like;
+import com.inception.backend.pojo.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -35,4 +36,7 @@ public interface DreamWorldMapper {
 
     @Delete("delete from favorite where dreamID = #{dreamID} and userID = #{userID}")
     void deleteFavorite(Integer dreamID, Integer userID);
+
+    @Select("select * from user where userID = #{userID}")
+    User getUserInfoByID(Integer userID);
 }

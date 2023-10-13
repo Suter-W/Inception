@@ -21,6 +21,10 @@ public class Dream {
 
     private Integer likeCount;
 
+    private String userName;
+
+    private String userAvatar;
+
     private Boolean isLike = false;
 
     private Boolean isFavorite = false;

@@ -28,15 +28,13 @@ public class LoginController {
 
     /**
      * 用户登录校验
-     * @param userPhoneNum
-     * @param userPassword
+     * @param user
      * @return Result
      */
-    @GetMapping("/login")
-    public Result login(@RequestParam String userPhoneNum,
-                        @RequestParam String userPassword){
-        log.info("用户登录：{}",userPhoneNum);
-        User u = loginService.login(userPhoneNum,userPassword);
+    @PostMapping("/login")
+    public Result login(@RequestBody User user){
+        log.info("用户登录：{}",user.getUserPhoneNum());
+        User u = loginService.login(user.getUserPhoneNum(), user.getUserPassword());
         return u != null?Result.success():Result.error("用户名或密码错误");
     }
 

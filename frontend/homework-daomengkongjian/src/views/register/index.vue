@@ -4,7 +4,6 @@
       <el-card>
         <!-- form 表单部分 -->
         <div class="title">欢迎注册</div>
-        
         <el-row :gutter="12">
             <el-col :span='6'>
               <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
@@ -61,7 +60,6 @@
           </div>
 
           <el-form-item class="tc">
-            
           </el-form-item>
         </el-form></el-col>
         </el-row>
@@ -80,75 +78,88 @@
 </template>
 
 <script>
-import { registerApi } from "@/api/user";
-import axios from "axios";
+import { registerApi } from '@/api/user'
+// import axios from "axios";
 export default {
-  name: "Register",
+  name: 'UserRegister',
 
-  data() {
+  data () {
     return {
       form: {
-        username: "",
-        mobile: "",
-        password: "",
-        confirmPassword: ""
+        username: '',
+        mobile: '',
+        password: '',
+        confirmPassword: ''
       },
       rules: {
         username: [
-          { required: true, message: "用户名不能为空", trigger: "blur" },
-          { min: 5, max: 11, message: "用户名长度在5-11之间", trigger: "blur" }
+          { required: true, message: '用户名不能为空', trigger: 'blur' },
+          { min: 5, max: 11, message: '用户名长度在5-11之间', trigger: 'blur' }
         ],
         mobile: [
-          { required: true, message: "手机号不能为空", trigger: "blur" },
-          { pattern: /^1\d{10}$/, message: "手机号格式错误", trigger: "blur" }
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          { pattern: /^1\d{10}$/, message: '手机号格式错误', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: "密码不能为空", trigger: "blur" },
-          { min: 5, max: 11, message: "密码长度在5-11之间", trigger: "blur" }
+          { required: true, message: '密码不能为空', trigger: 'blur' },
+          { min: 5, max: 11, message: '密码长度在5-11之间', trigger: 'blur' }
         ],
         confirmPassword: [
-          { required: true, message: "确认密码不能为空", trigger: "blur" },
-          { validator: this.checkPassword, trigger: "blur" }
+          { required: true, message: '确认密码不能为空', trigger: 'blur' },
+          { validator: this.checkPassword, trigger: 'blur' }
         ]
       },
-      inputType: "password"
-    };
-  },
-
-  methods: {
-    checkPassword(rule, value, callback) {
-      if (value !== this.form.password) {
-        callback(new Error("两次密码输入不一致"));
-      } else {
-        callback();
-      }
-    },
-    login(){
-      this.$router.push("/login");
-    },
-    submit() {
-      // 对整个表单校验
-      this.$refs.form.validate(async valid => {
-        if (valid) {
-          console.log(valid);
-          // 向后端发送注册请求
-          try {
-            const res = await registerApi(this.form);
-            console.log(res.message);
-            // 注册成功后的操作，例如跳转到登录页面
-          } catch (error) {
-            console.error(error);
-            // 注册失败的操作
-          }
-        }
-      });
+      inputType: 'password'
     }
   },
 
-  mounted() {
+  methods: {
+    checkPassword (rule, value, callback) {
+      if (value !== this.form.password) {
+        callback(new Error('两次密码输入不一致'))
+      } else {
+        callback()
+      }
+    },
+
+    login () {
+      this.$router.push('/login')
+    },
+
+    submit () {
+      // 对整个表单校验
+      this.$refs.form.validate(async valid => {
+        if (valid) {
+          console.log(valid)
+          // 向后端发送注册请求
+          try {
+            const res = await registerApi({
+              userPhoneNum: this.form.mobile,
+              userPassword: this.form.password,
+              userName: this.form.username
+            })
+            // 注册成功后的操作，例如跳转到登录页面
+            if (res.code === 1) {
+              console.log(res.msg)
+              this.$message.success(res.msg)
+              this.$router.push('/login')
+            } else {
+              console.log(res.msg)
+              this.$message.error(res.msg)
+            }
+          } catch (error) {
+            console.error(error)
+            // 注册失败的操作
+          }
+        }
+      })
+    }
+  },
+
+  mounted () {
     // 初始化页面时的操作
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -176,7 +187,6 @@ export default {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-     
 
       .img1 {
         position: absolute;
@@ -265,7 +275,7 @@ width: 100%;
     text-align: center;
 
     /* ::v-deep .el-button {
-    
+
     } */
   }
 }

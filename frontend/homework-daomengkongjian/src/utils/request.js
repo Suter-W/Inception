@@ -4,7 +4,7 @@ import store from '@/store'
 import { Message } from 'element-ui'
 // 创建 axios实例 baseURL
 const request = axios.create({
-  baseURL: '/api',
+  baseURL: 'http://localhost:8088',
   timeout: 5000
 })
 // axios实例 拦截器

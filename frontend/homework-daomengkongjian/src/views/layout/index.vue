@@ -2,7 +2,6 @@
 
   <el-container class="layout-page">
 
-
     <el-container>
       <el-header>
         <div class="user">
@@ -75,7 +74,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '../../styles/index.scss';
-
 
 .layout-page {
   height: 100vh;

@@ -9,11 +9,11 @@
         <el-form ref="form" :model="form" :rules="rules">
           <div class="usernameHZ PD">
             <!-- <div class="img2"><img src="../../assets/loinSJ.png" alt="" /></div> -->
-            <el-form-item prop="loginName" label="用户名">
+            <el-form-item prop="loginPhoneNum" label="手机号">
               <!-- <svg-icon icon-class="user" /> -->
               <el-input
-                placeholder="请输入用户名"
-                v-model="form.loginName"
+                placeholder="请输入手机号"
+                v-model="form.loginPhoneNum"
                 style="width: 420px;"
               ></el-input>
             </el-form-item>
@@ -75,91 +75,99 @@
 // scoped的作用，可以让样式在当前组件起作用（局部样式）
 // 默认scoped样式，不会向下渗透，只会影响到子组件的根元素，再深就不行了
 // import imgurl from '../../assets/login.png'
-import { loginApi } from "@/api/user";
-import axios from "axios";
+import { loginApi } from '@/api/user'
+import axios from 'axios'
 export default {
-  name: "daokdfoad",
+  name: 'UserLogin',
 
-  data() {
+  data () {
     return {
       form: {
-        loginName: "admin",
-        password: "admin",
-        code: "",
+        loginPhoneNum: '',
+        password: '',
+        code: '',
         loginType: 0,
-        clientToken: "",
+        clientToken: ''
       },
-      imgurl: "",
+      imgurl: '',
 
       rules: {
-        loginName: [
-          { required: true, message: "用户名 必填项", trigger: "blur" },
-          { min: 5, max: 11, message: "用户名长度在5-11", trigger: "blur" },
+        loginPhoneNum: [
+          { required: true, message: '手机号 必填项', trigger: 'blur' },
+          { min: 11, max: 11, message: '手机号格式错误', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: "密码 必填项", trigger: "blur" },
-          { pattern: /^\w{5,10}$/, message: "密码 格式错误", trigger: "blur" },
-          // { min: 5, max: 11, message: '用户名长度在5-11', trigger: 'blur' }
+          { required: true, message: '密码 必填项', trigger: 'blur' },
+          { pattern: /^\w{5,10}$/, message: '密码 格式错误', trigger: 'blur' }
+          // { min: 5, max: 11, message: '手机号长度在5-11', trigger: 'blur' }
         ],
-        code: [{ required: true, message: "验证码 必填项", trigger: "blur" }],
+        code: [{ required: true, message: '验证码 必填项', trigger: 'blur' }]
       },
-      inputType: "password",
-    };
+      inputType: 'password'
+    }
   },
 
-  mounted() {
-    this.imgyzm();
+  mounted () {
+    this.imgyzm()
   },
 
   methods: {
-    register(){
-      this.$router.push("/register");
+    register () {
+      this.$router.push('/register')
     },
-    submit() {
+    submit () {
       // 对整个 表单校验
       // form 组件的validate
       this.$refs.form.validate(async (valid) => {
         if (valid) {
-          console.log(valid);
+          console.log(valid)
           // 向后端 发登录请求  ==> 需要登录请求 ==> 封装/引入/使用
           try {
             // this.loading = true
-            // const res = await loginApi(this.form);
-            // commit
-            this.$store.commit("user/updateToken",'123213');
-            // mapMutations('模块名称-user', ['updateToken'])
-            this.$router.push("/");
+            const res = await loginApi({
+              userPhoneNum: this.form.loginPhoneNum,
+              userPassword: this.form.password
+            })
+
+            if (res.code === 1) {
+              // commit
+              this.$store.commit('user/updateToken', '123213')
+              // mapMutations('模块名称-user', ['updateToken'])
+              this.$router.push('/home')
+            } else {
+              this.imgyzm()
+              this.$message.error(res.msg)
+            }
           } finally {
             // this.loading = false
-            console.log(1);
+            console.log(1)
           }
           // el-button loading 属性
           // element-ui ===> 提供的自定义指令 v-loading
           // 拿到token ==> 存在Vuex里
           // 去首页
         }
-      });
+      })
     },
 
-
-    async imgyzm() {
-      const random = Math.floor(Math.random() * 100);
+    async imgyzm () {
+      const random = Math.floor(Math.random() * 100)
       const res = await axios({
         url: `https://likede2-admin.itheima.net/likede/api/user-service/user/imageCode/${random}`,
-        responseType: "blob",
-      });
-      this.imgurl = res.config.url;
-      this.form.clientToken = random;
+        responseType: 'blob'
+      })
+      this.imgurl = res.config.url
+      this.form.clientToken = random
     },
 
-    createRandom() {
-      this.form.clientToken = nanoid();
-    },
-  },
+    createRandom () {
+      this.form.clientToken = nanoid()
+    }
+  }
   // 点击按钮，实现登录
   // 校验通过（form 组件的validate）之后 在向后端 发请求
   // image.png
-};
+}
 </script>
 
 <style lang="scss">
@@ -184,7 +192,6 @@ export default {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-
 
       .img1 {
         position: absolute;

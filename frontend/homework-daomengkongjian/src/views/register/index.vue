@@ -3,17 +3,17 @@
     <div class="box">
       <el-card>
         <!-- form 表单部分 -->
-        <div class="title">欢迎注册</div>
-        <el-row :gutter="12">
-            <el-col :span='6'>
-              <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
+        <div class="title">Register</div>
+        <el-row :gutter="35" style="margin-top: 10px;">
+            <el-col :span='11'>
+              <img src="https://img.zcool.cn/community/018a145e8be3b5a80120a89592780b.jpg@1280w_1l_2o_100sh.jpg" class="image">
             </el-col>
             <el-col :span='1'>
             <el-divider  direction="vertical"></el-divider>
 
             </el-col>
 
-          <el-col :span="17">
+          <el-col :span="13">
             <el-form ref="form" :model="form" :rules="rules">
           <div class="usernameHZ PD">
             <!-- <div class="img2"><img src="" alt="" /></div> -->
@@ -21,6 +21,7 @@
               <el-input
                 placeholder="请输入用户名"
                 v-model="form.username"
+                style="width: 300px;"
               ></el-input>
             </el-form-item>
           </div>
@@ -31,6 +32,7 @@
               <el-input
                 placeholder="请输入手机号"
                 v-model="form.mobile"
+                style="width: 300px;"
               ></el-input>
             </el-form-item>
           </div>
@@ -43,6 +45,7 @@
                 v-model="form.password"
                 :type="inputType"
                 show-password
+                style="width: 300px;"
               ></el-input>
             </el-form-item>
           </div>
@@ -55,6 +58,7 @@
                 v-model="form.confirmPassword"
                 :type="inputType"
                 show-password
+                style="width: 300px;"
               ></el-input>
             </el-form-item>
           </div>
@@ -162,27 +166,29 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 /* 样式定义 */
 ::v-deep .el-divider--vertical{
   height:468px
 }
 .image{
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 450px;
+  //margin-left: 0px;
 }
 .login-page {
   min-height: 100vh;
   // flex 实现水平垂直居中
   .title{
     text-align: center;
-    font-size: 26px;
-    font-weight: bold;
+    //font-size: 26px;
+    //font-weight: bold;
+    font: small-caps bold 26px/1 sans-serif;
   }
   .el-card {
     ::v-deep .el-card__body {
       position: absolute;
-      width: 700px;
+      width: 800px;
       height: auto;
       top: 50%;
       left: 50%;

@@ -3,8 +3,8 @@
     <div class="box">
       <el-card class="card">
         <!-- form 表单部分 -->
-        <div class="title">欢迎来到</div>
-        <div class="title">盗梦空间</div>
+        <div class="title">Welcome To</div>
+        <div class="title">Inception Space</div>
 
         <el-form ref="form" :model="form" :rules="rules">
           <div class="usernameHZ PD">
@@ -48,7 +48,7 @@
           </div>
 
           <el-form-item class="tc">
-            <el-row :gutter="16">
+            <el-row :gutter="15">
               <el-col :span="12">
                 <el-button type="primary" @click="register">注册</el-button>
               </el-col>
@@ -179,10 +179,11 @@ export default {
   // flex 实现水平垂直居中
   .title{
     text-align: center;
-    font-size: 26px;
+    //font-size: 26px;
     //font-weight: bold;
     //font-family: JetBrains Mono Medium;
     //color: #ffffff;
+    font: small-caps bold 26px/1 sans-serif;
   }
   .el-card {
     ::v-deep .el-card__body {
@@ -207,7 +208,7 @@ export default {
     }
   }
   .el-form {
-    padding: 20px 0 0 10px;
+    padding: 10px 0 0 10px;
     .PD {
       ::v-deep .el-input__inner {
         padding-left: 37px;
@@ -278,6 +279,7 @@ export default {
   }
   .tc {
     text-align: center;
+    margin-top: 10px;
 
     /* ::v-deep .el-button {
 

@@ -105,7 +105,7 @@
       </div>
       <div>
         <el-tooltip class="item" effect="light" content="写梦" placement="top">
-          <el-button type="text" icon="el-icon-plus"></el-button>
+          <el-button type="text" icon="el-icon-plus" @click="handleLink('addlog')"></el-button>
         </el-tooltip>
       </div>
       <div>
@@ -201,6 +201,11 @@ export default {
     };
   },
   methods: {
+    handleLink(linknName){
+      this.$router.push({
+        name:linknName
+      })
+    },
     showMoreOptions() {
       this.showOptions = !this.showOptions;
     },

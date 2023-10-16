@@ -13,7 +13,7 @@
 // 去登录
 import router from '@/router'
 import store from '@/store'
-const whiteList = ['/login','/register']
+const whiteList = ['/login','/register','/home','/addlog'] //守卫路由白名单
 
 router.beforeEach((to, from, next) => {
   console.log(to)

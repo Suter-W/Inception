@@ -26,7 +26,13 @@ const routes = [
     children: [
       {
         path: '/home',
+        name:'home',
         component: () => import('@/views/home')
+      },
+      {
+        path: '/addlog',
+        name:'addlog',
+        component: () => import('@/views/addlog')
       }
     ]
   }

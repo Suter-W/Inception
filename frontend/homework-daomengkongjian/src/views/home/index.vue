@@ -105,7 +105,7 @@
       </div>
       <div>
         <el-tooltip class="item" effect="light" content="写梦" placement="top">
-          <el-button type="text" icon="el-icon-plus"></el-button>
+          <el-button type="text" icon="el-icon-plus" @click="handleLink('addlog')"></el-button>
         </el-tooltip>
       </div>
       <div>
@@ -301,15 +301,19 @@ export default {
       }
     },
 
+    handleLink (linknName) {
+      this.$router.push({
+        name: linknName
+      })
+    },
     showMoreOptions () {
       this.showOptions = !this.showOptions
     },
     openComment (row, index) {
       this.actionPost.index = index
       this.actionPost.post = row
-
-      this.dialogVisible = true
     },
+
     handleClose () {
       this.formData = {
         comment: ''
@@ -330,11 +334,6 @@ export default {
       })
       this.handleClose()
     }
-  },
-
-  beforeDestroy () {
-    // 在组件销毁之前，记得移除滚动事件监听器，以防止内存泄漏
-    this.$refs.scrollContainer.removeEventListener('scroll', this.onScroll)
   }
 }
 </script>

@@ -35,7 +35,7 @@ public class LoginController {
     public Result login(@RequestBody User user){
         log.info("用户登录：{}",user.getUserPhoneNum());
         User u = loginService.login(user.getUserPhoneNum(), user.getUserPassword());
-        return u != null?Result.success():Result.error("用户名或密码错误");
+        return u != null?Result.success(u.getUserID()):Result.error("用户名或密码错误");
     }
 
     @PostMapping("/register")

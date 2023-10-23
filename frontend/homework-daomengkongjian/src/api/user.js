@@ -15,3 +15,11 @@ export const registerApi = (data) => {
     data: data
   })
 }
+
+export const getUserInfoApi = (data) => {
+  return request({
+    url: '/User/user',
+    method: 'GET',
+    params: data
+  })
+}

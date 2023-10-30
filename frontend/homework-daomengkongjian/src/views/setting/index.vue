@@ -12,7 +12,7 @@
             @select="handleMenuSelect"
           >
             <el-menu-item index="mine" :route="{path:'/setting/mine'}"> 我的账号</el-menu-item>
-            <el-menu-item index="message" :route="{path:'/setting/message'}"> 消息通知</el-menu-item>
+            <!-- <el-menu-item index="message" :route="{path:'/setting/message'}"> 消息通知</el-menu-item> -->
             <el-menu-item index="infoset" :route="{path:'/setting/infoset'}">账号设置</el-menu-item>
           </el-menu>
           <div class="logout">
@@ -30,16 +30,33 @@
 <script>
 export default {
   methods: {
+    // handleMenuSelect(index) {
+    //   // 在这里处理菜单点击事件
+    //   if (index === "myAccount") {
+    //     // 处理我的账号菜单点击事件
+    //   } else if (index === "notifications") {
+    //     // 处理消息通知菜单点击事件
+    //   } else if (index === "accountSettings") {
+    //     // 处理账号设置菜单点击事件
+    //   }
+    // },
     handleMenuSelect(index) {
-      // 在这里处理菜单点击事件
-      if (index === "myAccount") {
-        // 处理我的账号菜单点击事件
-      } else if (index === "notifications") {
-        // 处理消息通知菜单点击事件
-      } else if (index === "accountSettings") {
-        // 处理账号设置菜单点击事件
-      }
-    },
+  switch (index) {
+    case 'myAccount':
+      this.$router.push({ path: '/setting/mine' });
+      break;
+    case 'notifications':
+      this.$router.push({ path: '/setting/message' });
+      break;
+    case 'infoset':
+      this.$router.push({ path: '/setting/infoset' });
+      break;
+    default:
+      // 默认处理
+      break;
+  }
+}
+,
     handleLogout() {
       // 处理退出按钮点击事件
       // 可以执行退出逻辑，例如注销用户或跳转到登录页面
@@ -99,9 +116,11 @@ export default {
 .content {
   flex: 1;
   padding: 20px;
-  //background-color: #ecf5ff;
+  // background-color: #ecf5ff;
   background: url('/src/assets/background.jpg');
   
-  opacity: 0.25;
+  
+  
 }
+
 </style>

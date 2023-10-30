@@ -33,6 +33,39 @@ const routes = [
         path: '/addlog',
         name:'addlog',
         component: () => import('@/views/addlog')
+      },
+      {
+        path: '/log',
+        name:'log',
+        component: () => import('@/views/log')
+      },
+      {
+        path: '/collect',
+        name:'collect',
+        component: () => import('@/views/collect')
+      },
+      {
+        path: '/setting',
+        name:'setting',
+        component: () => import('@/views/setting'),
+        redirect: '/setting/mine',
+        children: [
+          {
+            path: '/setting/infoset',
+            name:'infoset',
+            component: () => import('@/views/setting/children/infoset')
+          },
+          {
+            path: '/setting/message',
+            name:'message',
+            component: () => import('@/views/setting/children/message')
+          },
+          {
+            path: '/setting/mine',
+            name:'mine',
+            component: () => import('@/views/setting/children/mine')
+          },
+        ]
       }
     ]
   }

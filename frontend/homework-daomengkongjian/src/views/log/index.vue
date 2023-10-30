@@ -6,12 +6,7 @@
       :key="post.id"
     >
       <div class="weibo-header">
-        <el-avatar
-          class="weibo-avatar"
-          :src="post.avatarUrl"
-          size="small"
-        ></el-avatar>
-        <span class="weibo-username">{{ post.username }}</span>
+        <span class="weibo-username">{{ post.time }}</span>
       </div>
       <div class="weibo-content">
         {{ post.content }}
@@ -85,85 +80,22 @@
       </el-collapse>
     </el-card>
 
-    <el-button
-      class="weibo-add-button"
-      type="text"
-      icon="el-icon-edit"
-      @click="showMoreOptions"
-    >
-    </el-button>
-    <div class="weibo-more-options" v-show="showOptions">
-      <div>
-        <el-tooltip
-          class="item"
-          effect="light"
-          content="我的收藏"
-          placement="left"
-        >
-          <el-button type="text" icon="el-icon-star-off" @click="handleLink('collect')"></el-button>
-        </el-tooltip>
-      </div>
-      <div>
-        <el-tooltip class="item" effect="light" content="写梦" placement="top">
-          <el-button type="text" icon="el-icon-plus" @click="handleLink('addlog')"></el-button>
-        </el-tooltip>
-      </div>
-      <div>
-        <el-tooltip
-          class="item"
-          effect="light"
-          content="历史梦境"
-          placement="top"
-          ><el-button @click="handleLink('log')" type="text" icon="el-icon-moon-night"></el-button>
-        </el-tooltip>
-      </div>
-      <div>
-        <el-tooltip
-          class="item"
-          effect="light"
-          content="账号及设置"
-          placement="right"
-          ><el-button type="text" icon="el-icon-setting" @click="handleLink('setting')"></el-button>
-        </el-tooltip>
-      </div>
-    </div>
-    <!-- 评论弹窗 -->
-    <el-dialog :visible.sync="dialogVisible" title="评论" width="700px">
-      <el-form ref="commentForm" :model="formData" label-width="0px">
-        <el-form-item label="">
-          <el-input
-            type="textarea"
-            :rows="6"
-            v-model="formData.comment"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-row :gutter="16">
-          <el-col :span="12">
-            <el-button @click="handleClose">取消</el-button>
-          </el-col>
-          <el-col :span="12">
-            <el-button type="primary" @click="submitForm">确定</el-button>
-          </el-col>
-        </el-row>
-      </div>
-    </el-dialog>
+
+   
   </div>
 </template>
 
 <script>
 import dayjs from "dayjs"; // 导入日期js
 export default {
+  name:'log',
   data() {
     return {
-      dialogVisible: false,
-      formData: {
-        comment: "",
-      },
+   
       weiboPosts: [
         {
           id: 1,
+          time:'2023-10-21 10:10:10',
           avatarUrl: "avatar1.jpg",
           username: "User1",
           content: "This is the content of the first post.",
@@ -180,6 +112,8 @@ export default {
         },
         {
           id: 2,
+          time:'2023-10-22 10:10:10',
+
           avatarUrl: "avatar2.jpg",
           username: "User2",
           content: "Another interesting post goes here.",
@@ -192,12 +126,7 @@ export default {
           star: false, //是否收藏
         },
       ],
-      showOptions: false,
-      actionPost: {
-        //记录当前操作的微博项
-        index: "",
-        post: null,
-      },
+    
     };
   },
   methods: {
@@ -206,35 +135,15 @@ export default {
         name:linknName
       })
     },
-    showMoreOptions() {
-      this.showOptions = !this.showOptions;
-    },
+ 
     openComment(row, index) {
       this.actionPost.index = index;
       this.actionPost.post = row;
 
       this.dialogVisible = true;
     },
-    handleClose() {
-      this.formData = {
-        comment: "",
-      };
-      this.dialogVisible = false;
-    },
-    submitForm() {
-      // 在这里执行提交评论的逻辑
-      // 可以使用 this.formData.comment 访问评论内容
-      // 这里仅演示如何关闭对话框
-      /* 模拟评论输入交互 */
 
-      //this.actionPost.post  当前操作的微博项
-      this.weiboPosts[this.actionPost.index].comments.push({
-        name: "z",
-        content: this.formData.comment,
-        time: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-      });
-      this.handleClose();
-    },
+   
   },
 };
 </script>
@@ -298,50 +207,10 @@ export default {
 }
 
 .weibo-add-button {
-  position: fixed;
-  bottom: 60px;
-  right: 100px;
-  width: 45px;
-  height: 45px;
+    display: none;
 }
 
-.weibo-more-options {
-  position: fixed;
-  bottom: 60px;
-  right: 100px;
-  display: flex;
-  flex-direction: column;
-  div {
-    width: 40px;
-    height: 40px;
-    transition: transform 0.3s; /* 设置位移过渡 */
-  }
-  .el-button {
-    height: 100%;
-    padding: 0;
-  }
-  div:nth-child(1) {
-    position: absolute;
-    left: -102px;
-    bottom: 0px;
-  }
 
-  div:nth-child(2) {
-    position: absolute;
-    left: -72px;
-    bottom: 55px;
-  }
-  div:nth-child(3) {
-    position: absolute;
-    left: -9px;
-    bottom: 54px;
-  }
-  div:nth-child(4) {
-    position: absolute;
-    left: 22px;
-    bottom: 0px;
-  }
-}
 .ava-box{
   display: flex;
   align-items: center;

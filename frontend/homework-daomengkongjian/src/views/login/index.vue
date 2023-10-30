@@ -77,7 +77,6 @@
 // 默认scoped样式，不会向下渗透，只会影响到子组件的根元素，再深就不行了
 // import imgurl from '../../assets/login.png'
 import { loginApi } from '@/api/user'
-import { mapMutations } from 'vuex'
 import axios from 'axios'
 export default {
   name: 'UserLogin',
@@ -114,21 +113,18 @@ export default {
   },
 
   methods: {
-    ...mapMutations('user', ['updateToken']),
-
-    logintest () {
-      this.$router.push('/home')
+    logintest(){
+    	this.$router.push('/home')
     },
     register () {
       this.$router.push('/register')
     },
-
     submit () {
       // 对整个 表单校验
       // form 组件的validate
       this.$refs.form.validate(async (valid) => {
         if (valid) {
-          // console.log(valid)
+          console.log(valid)
           // 向后端 发登录请求  ==> 需要登录请求 ==> 封装/引入/使用
           try {
             // this.loading = true
@@ -138,9 +134,9 @@ export default {
             })
 
             if (res.code === 1) {
-              // 保存用户id
-              this.updateToken(res.data)
-              // 转到home页面
+              // commit
+              this.$store.commit('user/updateToken', '123213')
+              // mapMutations('模块名称-user', ['updateToken'])
               this.$router.push('/home')
             } else {
               this.imgyzm()
@@ -148,7 +144,7 @@ export default {
             }
           } finally {
             // this.loading = false
-            // console.log(1)
+            console.log(1)
           }
           // el-button loading 属性
           // element-ui ===> 提供的自定义指令 v-loading

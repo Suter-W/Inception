@@ -6,9 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="9bd89ba2-7c90-4fec-8abd-561b4aa600f7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/api/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/api/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/inception/backend/controller/DreamWorldController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/inception/backend/controller/DreamWorldController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/inception/backend/mapper/DreamWorldMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/inception/backend/mapper/DreamWorldMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/inception/backend/service/DreamWorldService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/inception/backend/service/DreamWorldService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/inception/backend/service/serviceImpl/DreamWorldServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/inception/backend/service/serviceImpl/DreamWorldServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/api/dream.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/api/dream.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/views/home/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/views/home/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/views/layout/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/views/layout/index.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/views/login/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/views/login/index.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

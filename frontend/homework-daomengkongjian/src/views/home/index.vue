@@ -250,18 +250,12 @@ export default {
         const res = await getDreamsApi({
           userID: this.token
         })
-        console.log(res.data)
         queue = res.data
-        console.log('-----------')
-        console.log(queue)
       } catch (e) {
       }
-      console.log('------')
-      console.log(queue)
 
       for (let i = 0; i < queue.length; i++) {
         const comments = await this.getDreamCommentList(queue[i].dreamID)
-        console.log(comments)
 
         // 封装dream
         const newDream = {
@@ -275,9 +269,6 @@ export default {
           comments: comments,
           commentsCount: comments.length
         }
-
-        console.log(newDream)
-        console.log('-----------')
         // 将dream装入weiboPost
         this.weiboPosts.push(newDream)
       }
@@ -298,7 +289,6 @@ export default {
           }
           comments.push(comment)
         }
-        console.log('评论列表', comments)
         return comments
       } catch (e) {
       }
@@ -312,7 +302,6 @@ export default {
           id: userID
         })
         userName = res.data.userName
-        console.log('获取评论用户名', userName)
         return userName
       } catch (e) {
       }

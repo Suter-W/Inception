@@ -53,7 +53,7 @@
                 <el-button type="primary" @click="register">注册</el-button>
               </el-col>
               <el-col :span="12">
-                <el-button type="primary" @click="logintest">登录</el-button>
+                <el-button type="primary" @click="submit">登录</el-button>
                 <!-- @click="submit"-->
               </el-col>
             </el-row>

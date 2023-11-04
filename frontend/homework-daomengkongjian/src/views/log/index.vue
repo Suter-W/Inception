@@ -79,73 +79,168 @@
         </el-collapse-item>
       </el-collapse>
     </el-card>
-
-
-   
   </div>
 </template>
 
 <script>
-import dayjs from "dayjs"; // 导入日期js
+import dayjs from 'dayjs' // 导入日期js
+import { mapState } from 'vuex'
+import { getDreamLogApi, getDreamCommentListApi } from '@/api/dream'
+import { getUserInfoApi } from '@/api/user'
 export default {
-  name:'log',
-  data() {
+  name: 'log',
+  data () {
     return {
-   
+      // 单个评论
+      comment: {
+        name: '', content: '', time: ''
+      },
+
+      // 单个梦境
+      dream: {
+        id: 0,
+        time: '',
+        avatarUrl: '',
+        username: '',
+        content: '',
+        likes: 0,
+        commentsCount: 0,
+        favorites: 0,
+        up: false, // 是否点赞
+        comments: [], // 评论列表
+
+        star: false // 是否收藏
+      },
+
       weiboPosts: [
-        {
-          id: 1,
-          time:'2023-10-21 10:10:10',
-          avatarUrl: "avatar1.jpg",
-          username: "User1",
-          content: "This is the content of the first post.",
-          likes: 10,
-          comments: 5,
-          favorites: 3,
-          up: false, //是否点赞
-          comments: [
-            { name: "z", content: "啊阿斯顿", time: "2023-10-12 10:00:00" },
-            { name: "z", content: "啊阿斯顿123", time: "2023-10-12 10:00:00" },
-          ], //评论
+        // {
+        //   id: 1,
+        //   time:'2023-10-21 10:10:10',
+        //   avatarUrl: "avatar1.jpg",
+        //   username: "User1",
+        //   content: "This is the content of the first post.",
+        //   likes: 10,
+        //   comments: 5,
+        //   favorites: 3,
+        //   up: false, //是否点赞
+        //   comments: [
+        //     { name: "z", content: "啊阿斯顿", time: "2023-10-12 10:00:00" },
+        //     { name: "z", content: "啊阿斯顿123", time: "2023-10-12 10:00:00" },
+        //   ], //评论
 
-          star: false, //是否收藏
-        },
-        {
-          id: 2,
-          time:'2023-10-22 10:10:10',
+        //   star: false, //是否收藏
+        // },
+        // {
+        //   id: 2,
+        //   time:'2023-10-22 10:10:10',
 
-          avatarUrl: "avatar2.jpg",
-          username: "User2",
-          content: "Another interesting post goes here.",
-          likes: 15,
-          comments: 8,
-          favorites: 7,
-          up: false, //是否点赞
-          comments: [], //评论
+        //   avatarUrl: "avatar2.jpg",
+        //   username: "User2",
+        //   content: "Another interesting post goes here.",
+        //   likes: 15,
+        //   comments: 8,
+        //   favorites: 7,
+        //   up: false, //是否点赞
+        //   comments: [], //评论
 
-          star: false, //是否收藏
-        },
-      ],
-    
-    };
+        //   star: false, //是否收藏
+        // }
+      ]
+    }
   },
+
+  computed: {
+    ...mapState('user', ['token'])
+  },
+
+  created () {
+    this.loadData()
+  },
+
   methods: {
-    handleLink(linknName){
+    async loadData () {
+      this.getDreams()
+    },
+
+    async getDreams () {
+      let queue = []
+      try {
+        const res = await getDreamLogApi({
+          userID: this.token
+        })
+        queue = res.data
+      } catch (e) {
+      }
+
+      for (let i = 0; i < queue.length; i++) {
+        const comments = await this.getDreamCommentList(queue[i].dreamID)
+
+        // 封装dream
+        const newDream = {
+          id: queue[i].dreamID,
+          time: queue[i].dreamTime,
+          avatarUrl: queue[i].userAvatar,
+          username: queue[i].userName,
+          content: queue[i].dreamContent,
+          likes: queue[i].likeCount,
+          up: queue[i].isLike,
+          star: queue[i].isFavorite,
+          comments: comments,
+          commentsCount: comments.length
+        }
+
+        // 将dream装入weiboPost
+        this.weiboPosts.push(newDream)
+      }
+    },
+
+    // 获取某梦境的评论列表
+    async getDreamCommentList (dreamId) {
+      try {
+        const comments = []
+        const res = await getDreamCommentListApi({
+          dreamID: dreamId
+        })
+        for (let i = 0; i < res.data.length; i++) {
+          const comment = {
+            name: await this.getCommentUserName(res.data[i].userID),
+            content: res.data[i].commentContent,
+            time: res.data[i].commentTime
+          }
+          comments.push(comment)
+        }
+        return comments
+      } catch (e) {
+      }
+    },
+
+    // 获取评论的用户名
+    async getCommentUserName (userID) {
+      try {
+        let userName = ''
+        const res = await getUserInfoApi({
+          id: userID
+        })
+        userName = res.data.userName
+        return userName
+      } catch (e) {
+      }
+    },
+
+    handleLink (linknName) {
       this.$router.push({
-        name:linknName
+        name: linknName
       })
     },
- 
-    openComment(row, index) {
-      this.actionPost.index = index;
-      this.actionPost.post = row;
 
-      this.dialogVisible = true;
-    },
+    openComment (row, index) {
+      this.actionPost.index = index
+      this.actionPost.post = row
 
-   
-  },
-};
+      this.dialogVisible = true
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

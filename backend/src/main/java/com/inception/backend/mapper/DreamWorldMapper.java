@@ -10,6 +10,9 @@ public interface DreamWorldMapper {
     @Select("select * from dream where dreamStatus != 2 order by dreamTime desc")
     List<Dream> getAllDreams();
 
+    @Select("select * from dream where userID = #{userID} order by dreamTime desc")
+    List<Dream> getDreamLog(Integer userID);
+
     @Select("select * from `like` where userID = #{userID}")
     List<Like> getLikeByUser(Integer userID);
 

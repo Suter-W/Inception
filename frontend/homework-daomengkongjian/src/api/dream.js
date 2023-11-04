@@ -23,3 +23,11 @@ export const publishDreamApi = (data) => {
     data: data
   })
 }
+
+export const getDreamLogApi = (data) => {
+  return request({
+    url: '/World/getDreamLog',
+    method: 'GET',
+    params: data
+  })
+}

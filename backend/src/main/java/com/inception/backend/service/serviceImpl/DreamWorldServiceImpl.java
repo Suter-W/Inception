@@ -21,6 +21,11 @@ public class DreamWorldServiceImpl implements DreamWorldService {
         return dreamWorldMapper.getAllDreams();
     }
 
+    @Override
+    public List<Dream> getDreamLog(Integer userID) {
+        return dreamWorldMapper.getDreamLog(userID);
+    }
+
     public List<Like> userLikeList(Integer userID) {
         return dreamWorldMapper.getLikeByUser(userID);
     }

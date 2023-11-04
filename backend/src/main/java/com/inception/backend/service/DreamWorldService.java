@@ -7,6 +7,8 @@ import java.util.List;
 public interface DreamWorldService {
     List<Dream> getDreamList();
 
+    List<Dream> getDreamLog(Integer userID);
+
     List<Like> userLikeList(Integer userID);
 
     List<Favorite> userFavoriteList(Integer userID);

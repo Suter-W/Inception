@@ -15,3 +15,11 @@ export const getDreamCommentListApi = (data) => {
     params: data
   })
 }
+
+export const publishDreamApi = (data) => {
+  return request({
+    url: '/Publish/publishDream',
+    method: 'POST',
+    data: data
+  })
+}

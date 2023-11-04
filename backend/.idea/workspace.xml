@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9bd89ba2-7c90-4fec-8abd-561b4aa600f7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/inception/backend/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/inception/backend/controller/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/inception/backend/controller/LoginController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/inception/backend/controller/LoginController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/api/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/api/user.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/views/home/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/views/home/index.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/views/layout/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/homework-daomengkongjian/src/views/layout/index.vue" afterDir="false" />

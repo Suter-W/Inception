@@ -8,7 +8,8 @@
 
           <!-- <img src="../../assets/帝可得3.png"
            > -->
-          <el-link :underline="false">欢迎您{{name}}</el-link>
+          <el-avatar class="weibo-avatar" :src="yourAvatarUrl" size="small"></el-avatar>
+          <el-link :underline="false">{{name}} 欢迎您！</el-link>
         </div>
 
         <div class="logout">
@@ -27,39 +28,47 @@
 </template>
 
 <script>
-// import { getUserInfoApi } from '@/api/user'
+import { getUserInfoApi } from '@/api/user'
 import { mapMutations } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
-  name: 'layoutdad',
+  name: 'LayoutPage',
 
   data () {
     return {
-      name: ''
-      // avatar: '',
+      userInfo: {},
+      name: '',
+      avatar: ''
 
     }
   },
   computed: {
-
+    ...mapState('user', ['token'])
   },
 
   mounted () {
 
   },
   created () {
-    // this.getUserInfo()
+    // console.log(this.token)
+    this.getUserInfo()
   },
 
   methods: {
+    // 退出登录
     ...mapMutations('user', ['logout']),
-    //  async getUserInfo () {
-    //   try {
-    //     const { data: { name, avatar } } = await getUserInfoApi()
-    //     this.name = name
-    //     this.avatar = avatar
-    //   } catch (e) {}
-    // },
+
+    // 获取用户信息
+    async getUserInfo () {
+      try {
+        this.userInfo = await getUserInfoApi({
+          id: this.token
+        })
+        this.name = this.userInfo.data.userName
+        this.avatar = this.userInfo.data.userAvatar
+      } catch (e) {}
+    },
 
     handleOpen (key, keyPath) {
       console.log(key, keyPath)

@@ -6,7 +6,7 @@
       <el-card class="weibo-card weibo-post-card">
       <div class="weibo-header">
         <el-avatar class="weibo-avatar" :src="yourAvatarUrl" size="small"></el-avatar>
-        <span class="weibo-username">Your Name</span>
+        <span class="weibo-username">{{name}}</span>
         <div class="weibo-post-buttons">
           <el-button type="primary" size="mini" @click="submitNormalPost">正常发布</el-button>
           <el-button type="primary" size="mini" @click="submitAnonymousPost">匿名发布</el-button>
@@ -24,51 +24,124 @@
     </el-card>
     </div>
 
-
     <!-- ... 其他微博内容 ... -->
   </div>
 </template>
 
 <script>
-export default {
-        name:'addlog',
+import { publishDreamApi } from '@/api/dream'
+import { getUserInfoApi } from '@/api/user'
+import { mapState } from 'vuex'
+import { Message } from 'element-ui'
 
-  data() {
+export default {
+  name: 'AddLog',
+
+  data () {
     return {
-      postContent: "", // 用来存储发布内容
+      userInfo: {},
+      name: '',
+      avatar: '',
+
+      postContent: '' // 用来存储发布内容
       // yourAvatarUrl: "your_avatar.jpg", // 设置用户头像的URL
-    };
+    }
   },
+
+  computed: {
+    ...mapState('user', ['token'])
+  },
+
+  created () {
+    // console.log(this.token)
+    this.getUserInfo()
+  },
+
   methods: {
-    submitNormalPost() {
-      // 正常发布逻辑，你可以在这里将 postContent 提交到后端或执行其他操作
-      this.$router.push({
-        name:'home'
-      })
-      this.clearPostForm();
+    // 获取用户信息
+    async getUserInfo () {
+      try {
+        this.userInfo = await getUserInfoApi({
+          id: this.token
+        })
+        this.name = this.userInfo.data.userName
+        this.avatar = this.userInfo.data.userAvatar
+      } catch (e) {}
     },
-    submitAnonymousPost() {
+
+    // 发布梦境
+    async publishDream (userID, dreamContent, dreamStatus) {
+      try {
+        const res = await publishDreamApi({
+          userID: userID,
+          dreamContent: dreamContent,
+          dreamStatus: dreamStatus
+        })
+        console.log(res.code)
+        return res.code
+      } catch (e) {
+      }
+    },
+
+    async submitNormalPost () {
+      // 正常发布逻辑，你可以在这里将 postContent 提交到后端或执行其他操作
+      try {
+        const result = await this.publishDream(this.token, this.postContent, 0)
+        if (result === 1) {
+          Message.success('发布成功！')
+          this.$router.push({
+            name: 'home'
+          })
+          this.clearPostForm()
+        } else {
+          Message.error('发布失败！')
+        }
+      } catch (e) {
+      }
+    },
+
+    async submitAnonymousPost () {
       // 匿名发布逻辑
       // 可以设置发布标志为匿名，并提交内容
-      this.$router.push({
-        name:'home'
-      })
-      this.clearPostForm();
+      try {
+        const result = await this.publishDream(this.token, this.postContent, 1)
+        if (result === 1) {
+          Message.success('匿名发布成功！')
+          this.$router.push({
+            name: 'home'
+          })
+          this.clearPostForm()
+        } else {
+          Message.error('发布失败！')
+        }
+      } catch (e) {
+      }
     },
-    submitPrivatePost() {
+
+    async submitPrivatePost () {
       // 私密发布逻辑
       // 可以设置发布标志为私密，并提交内容
-      this.$router.push({
-        name:'home'
-      })
-      this.clearPostForm();
+      try {
+        const result = await this.publishDream(this.token, this.postContent, 2)
+        if (result === 1) {
+          Message.success('私密发布成功！')
+          this.$router.push({
+            name: 'home'
+          })
+          this.clearPostForm()
+        } else {
+          Message.error('发布失败！')
+        }
+      } catch (e) {
+      }
     },
-    clearPostForm() {
+
+    clearPostForm () {
       // 清空发布表单内容
-      this.postContent = "";
-    },
-  },
-};
+      this.postContent = ''
+    }
+  }
+}
 </script>
 
 <style scoped>

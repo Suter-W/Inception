@@ -153,90 +153,207 @@
 </template>
 
 <script>
-import dayjs from "dayjs"; // 导入日期js
+import dayjs from 'dayjs' // 导入日期js
+import { mapState } from 'vuex'
+import { getDreamsApi, getDreamCommentListApi } from '@/api/dream'
+import { getUserInfoApi } from '@/api/user'
 export default {
-  data() {
+  data () {
     return {
       dialogVisible: false,
+
       formData: {
-        comment: "",
+        comment: ''
       },
+
+      // 单个评论
+      comment: {
+        name: '', content: '', time: ''
+      },
+
+      // 单个梦境
+      dream: {
+        id: 0,
+        avatarUrl: '',
+        username: '',
+        content: '',
+        likes: 0,
+        commentsCount: 0,
+        favorites: 0,
+        up: false, // 是否点赞
+        comments: [], // 评论列表
+
+        star: false // 是否收藏
+      },
+
+      // 浏览列表
       weiboPosts: [
-        {
-          id: 1,
-          avatarUrl: "avatar1.jpg",
-          username: "User1",
-          content: "This is the content of the first post.",
-          likes: 10,
-          comments: 5,
-          favorites: 3,
-          up: false, //是否点赞
-          comments: [
-            { name: "z", content: "啊阿斯顿", time: "2023-10-12 10:00:00" },
-            { name: "z", content: "啊阿斯顿123", time: "2023-10-12 10:00:00" },
-          ], //评论
+        // {
+        //   id: 1,
+        //   avatarUrl: "avatar1.jpg",
+        //   username: "User1",
+        //   content: "This is the content of the first post.",
+        //   likes: 10,
+        //   comments: 5,
+        //   favorites: 3,
+        //   up: false, //是否点赞
+        //   comments: [
+        //     { name: "z", content: "啊阿斯顿", time: "2023-10-12 10:00:00" },
+        //     { name: "z", content: "啊阿斯顿123", time: "2023-10-12 10:00:00" },
+        //   ], //评论
 
-          star: false, //是否收藏
-        },
-        {
-          id: 2,
-          avatarUrl: "avatar2.jpg",
-          username: "User2",
-          content: "Another interesting post goes here.",
-          likes: 15,
-          comments: 8,
-          favorites: 7,
-          up: false, //是否点赞
-          comments: [], //评论
+        //   star: false, //是否收藏
+        // },
+        // {
+        //   id: 2,
+        //   avatarUrl: "avatar2.jpg",
+        //   username: "User2",
+        //   content: "Another interesting post goes here.",
+        //   likes: 15,
+        //   comments: 8,
+        //   favorites: 7,
+        //   up: false, //是否点赞
+        //   comments: [], //评论
 
-          star: false, //是否收藏
-        },
+        //   star: false, //是否收藏
+        // },
       ],
+
       showOptions: false,
       actionPost: {
-        //记录当前操作的微博项
-        index: "",
-        post: null,
-      },
-    };
+        // 记录当前操作的微博项
+        index: '',
+        post: null
+      }
+    }
   },
+
+  computed: {
+    ...mapState('user', ['token'])
+  },
+
+  mounted () {
+  },
+
+  created () {
+    this.loadData()
+  },
+
   methods: {
-    handleLink(linknName){
+    async loadData () {
+      this.getDreams()
+    },
+
+    async getDreams () {
+      let queue = []
+      try {
+        const res = await getDreamsApi({
+          userID: this.token
+        })
+        console.log(res.data)
+        queue = res.data
+        console.log('-----------')
+        console.log(queue)
+      } catch (e) {
+      }
+      console.log('------')
+      console.log(queue)
+
+      for (let i = 0; i < queue.length; i++) {
+        const comments = await this.getDreamCommentList(queue[i].dreamID)
+        console.log(comments)
+
+        // 封装dream
+        const newDream = {
+          id: queue[i].dreamID,
+          avatarUrl: queue[i].userAvatar,
+          username: queue[i].userName,
+          content: queue[i].dreamContent,
+          likes: queue[i].likeCount,
+          up: queue[i].isLike,
+          star: queue[i].isFavorite,
+          comments: comments,
+          commentsCount: comments.length
+        }
+
+        console.log(newDream)
+        console.log('-----------')
+        // 将dream装入weiboPost
+        this.weiboPosts.push(newDream)
+      }
+    },
+
+    // 获取某梦境的评论列表
+    async getDreamCommentList (dreamId) {
+      try {
+        const comments = []
+        const res = await getDreamCommentListApi({
+          dreamID: dreamId
+        })
+        for (let i = 0; i < res.data.length; i++) {
+          const comment = {
+            name: await this.getCommentUserName(res.data[i].userID),
+            content: res.data[i].commentContent,
+            time: res.data[i].commentTime
+          }
+          comments.push(comment)
+        }
+        console.log('评论列表', comments)
+        return comments
+      } catch (e) {
+      }
+    },
+
+    // 获取评论的用户名
+    async getCommentUserName (userID) {
+      try {
+        let userName = ''
+        const res = await getUserInfoApi({
+          id: userID
+        })
+        userName = res.data.userName
+        console.log('获取评论用户名', userName)
+        return userName
+      } catch (e) {
+      }
+    },
+
+    handleLink (linknName) {
       this.$router.push({
-        name:linknName
+        name: linknName
       })
     },
-    showMoreOptions() {
-      this.showOptions = !this.showOptions;
+    showMoreOptions () {
+      this.showOptions = !this.showOptions
     },
-    openComment(row, index) {
-      this.actionPost.index = index;
-      this.actionPost.post = row;
+    openComment (row, index) {
+      this.actionPost.index = index
+      this.actionPost.post = row
 
-      this.dialogVisible = true;
+      this.dialogVisible = true
     },
-    handleClose() {
+    handleClose () {
       this.formData = {
-        comment: "",
-      };
-      this.dialogVisible = false;
+        comment: ''
+      }
+      this.dialogVisible = false
     },
-    submitForm() {
+    submitForm () {
       // 在这里执行提交评论的逻辑
       // 可以使用 this.formData.comment 访问评论内容
       // 这里仅演示如何关闭对话框
       /* 模拟评论输入交互 */
 
-      //this.actionPost.post  当前操作的微博项
+      // this.actionPost.post  当前操作的微博项
       this.weiboPosts[this.actionPost.index].comments.push({
-        name: "z",
+        name: 'z',
         content: this.formData.comment,
-        time: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-      });
-      this.handleClose();
-    },
-  },
-};
+        time: dayjs().format('YYYY-MM-DD HH:mm:ss')
+      })
+      this.handleClose()
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

@@ -27,4 +27,6 @@ public interface DreamWorldService {
     List<Comment> getDreamCommentList(Integer dreamID);
 
     void publishComment(Comment comment);
+
+    Dream getDreamByDreamId(Integer dreamId);
 }

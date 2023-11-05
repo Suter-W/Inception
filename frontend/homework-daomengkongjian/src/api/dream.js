@@ -31,3 +31,11 @@ export const getDreamLogApi = (data) => {
     params: data
   })
 }
+
+export const getFavoriteDreamsApi = (data) => {
+  return request({
+    url: '/World/getFavoriteDreams',
+    method: 'GET',
+    params: data
+  })
+}

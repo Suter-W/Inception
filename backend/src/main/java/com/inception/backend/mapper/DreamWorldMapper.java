@@ -16,7 +16,7 @@ public interface DreamWorldMapper {
     @Select("select * from `like` where userID = #{userID}")
     List<Like> getLikeByUser(Integer userID);
 
-    @Select("select * from favorite where userID = #{userID}")
+    @Select("select * from favorite where userID = #{userID} order by favoriteTime desc")
     List<Favorite> getFavoriteByUser(Integer userID);
 
     @Insert("insert into `like` (userID, dreamID, likeTime) values (#{userID},#{dreamID},#{likeTime})")
@@ -45,4 +45,7 @@ public interface DreamWorldMapper {
 
     @Insert("insert into comment (dreamID, userID, commentTime, commentContent) values (#{dreamID},#{userID},#{commentTime},#{commentContent})")
     void publishComment(Comment comment);
+
+    @Select("select * from dream where dreamID = #{dreamId}")
+    Dream getDreamByDreamId(Integer dreamId);
 }

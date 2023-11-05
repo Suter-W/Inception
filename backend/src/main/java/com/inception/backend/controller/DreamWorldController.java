@@ -27,6 +27,50 @@ public class DreamWorldController {
         return users;
     }
 
+    @GetMapping("/getFavoriteDreams")
+    public Result getFavoriteDreams(@RequestParam Integer userID){
+        log.info("获取该用户收藏的所有梦境");
+        List<Dream> dreams = new ArrayList<>();
+        List<Like> likes = dreamWorldService.userLikeList(userID);
+        List<Favorite> favorites = dreamWorldService.userFavoriteList(userID);
+        List<Integer> likeDreamIDs = new ArrayList<>();
+        List<Integer> favoriteDreamIDs = new ArrayList<>();
+        List<Integer> userIDs = new ArrayList<>();
+        for (Like like : likes) {
+            likeDreamIDs.add(like.getDreamID());
+        }
+        for(Favorite favorite : favorites){
+            favoriteDreamIDs.add(favorite.getDreamID());
+        }
+        for(Integer dreamId : favoriteDreamIDs){
+            Dream dream = dreamWorldService.getDreamByDreamId(dreamId);
+            if(dream != null){
+                dreams.add(dream);
+            }
+        }
+        for(Dream dream : dreams){
+            if(likeDreamIDs.contains(dream.getDreamID())){
+                dream.setIsLike(true);
+            }
+            if(favoriteDreamIDs.contains(dream.getDreamID())){
+                dream.setIsFavorite(true);
+            }
+            if(!userIDs.contains(dream.getUserID())){
+                userIDs.add(dream.getUserID());
+            }
+        }
+        List<User> users = getUserInfoByIDs(userIDs);
+        for(Dream dream : dreams){
+            for(User user : users){
+                if(Objects.equals(dream.getUserID(), user.getUserID())){
+                    dream.setUserName(user.getUserName());
+                    dream.setUserAvatar(user.getUserAvatar());
+                }
+            }
+        }
+        return Result.success(dreams);
+    }
+
     @GetMapping("/getDreamLog")
     public Result getDreamLog(@RequestParam Integer userID) {
         log.info("获取该用户所有梦境记录");

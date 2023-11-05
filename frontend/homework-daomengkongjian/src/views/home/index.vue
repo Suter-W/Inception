@@ -20,22 +20,24 @@
       <div class="weibo-actions">
         <!-- <font-awesome-icon :icon="['far', 'heart']" style="margin-right: 12px" /> -->
         <!-- <font-awesome-icon icon="fa-solid fa-user-secret" /> -->
+        <!-- @click="post.up = !post.up" -->
         <font-awesome-icon
           style="margin-right: 12px"
           :class="{ upActive: post.up }"
           :icon="post.up ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
-          @click="post.up = !post.up"
+          @click="like"
         />
         <font-awesome-icon
           icon="fa-regular fa-comment"
           style="margin-right: 12px"
           @click="openComment(post, index)"
         />
+        <!-- @click="post.star = !post.star" -->
         <font-awesome-icon
           style="margin-right: 12px"
           :class="{ starActive: post.star }"
           :icon="post.star ? 'fa-solid fa-star' : 'fa-regular fa-star'"
-          @click="post.star = !post.star"
+          @click="star"
         />
 
         <!-- <v-icon name="heart"  style="margin-right: 12px" :class="{'upActive':post.up}" @click="post.up=!post.up"/>
@@ -155,7 +157,15 @@
 <script>
 import dayjs from 'dayjs' // 导入日期js
 import { mapState } from 'vuex'
-import { getDreamsApi, getDreamCommentListApi, publishCommentApi } from '@/api/dream'
+import {
+  getDreamsApi,
+  getDreamCommentListApi,
+  publishCommentApi,
+  likeApi,
+  cancelLikeApi,
+  favoriteApi,
+  cancelFavoriteApi
+} from '@/api/dream'
 import { getUserInfoApi } from '@/api/user'
 export default {
   data () {
@@ -352,6 +362,54 @@ export default {
             time: dayjs().format('YYYY-MM-DD HH:mm:ss')
           })
           this.handleClose()
+        }
+      } catch (e) {
+      }
+    },
+
+    // 用户点赞
+    async like () {
+      try {
+        if (!this.actionPost.post.up) {
+          const res = await likeApi({
+            userID: this.token,
+            dreamID: this.actionPost.dreamId
+          })
+          if (res.code === 1) {
+            this.actionPost.post.up = true
+          }
+        } else {
+          const res = await cancelLikeApi({
+            userID: this.token,
+            dreamID: this.actionPost.dreamId
+          })
+          if (res.code === 1) {
+            this.actionPost.post.up = false
+          }
+        }
+      } catch (e) {
+      }
+    },
+
+    // 用户收藏
+    async star () {
+      try {
+        if (!this.actionPost.post.star) {
+          const res = await favoriteApi({
+            userID: this.token,
+            dreamID: this.actionPost.dreamId
+          })
+          if (res.code === 1) {
+            this.actionPost.post.star = true
+          }
+        } else {
+          const res = await cancelFavoriteApi({
+            userID: this.token,
+            dreamID: this.actionPost.dreamId
+          })
+          if (res.code === 1) {
+            this.actionPost.post.star = false
+          }
         }
       } catch (e) {
       }

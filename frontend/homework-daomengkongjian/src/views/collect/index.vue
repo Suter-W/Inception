@@ -19,7 +19,7 @@
           style="margin-right: 12px"
           :class="{ upActive: post.up }"
           :icon="post.up ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
-          @click="post.up = !post.up"
+          @click="like"
         />
         <font-awesome-icon
           icon="fa-regular fa-comment"
@@ -30,27 +30,106 @@
           style="margin-right: 12px"
           :class="{ starActive: post.star }"
           :icon="post.star ? 'fa-solid fa-star' : 'fa-regular fa-star'"
-          @click="post.star = !post.star"
+          @click="star"
         />
 
         <!-- <v-icon name="heart"  style="margin-right: 12px" :class="{'upActive':post.up}" @click="post.up=!post.up"/>
         <v-icon name="comments"  style="margin-right: 12px" />
         <v-icon name="fa-star"  :class="{'starActive':post.star}" @click="post.star=!post.star"/> -->
       </div>
+
+      <el-collapse accordion v-if="post.comments && post.comments.length > 0">
+        <el-collapse-item>
+          <!-- <template slot="title">
+            <div>
+              <div>   {{ post.comments[0].content }}</div>
+            <el-divider v-if="post.comments.length > 1"></el-divider>
+          </div>
+
+          </template>
+
+          <template
+            v-if="post.comments.length > 1"
+            v-for="comment in post.comments.slice(1)"
+          >
+            <div>
+              {{ comment.content }}
+              <el-divider></el-divider>
+            </div>
+          </template> -->
+          <template
+            v-if="post.comments.length"
+            v-for="comment in post.comments"
+          >
+            <div>
+              <div class="comment-head weibo-header">
+                <div class="ava-box">
+                  <el-avatar
+                    class="weibo-avatar"
+                    :src="post.avatarUrl"
+                    size="small"
+                  ></el-avatar>
+                  <span class="weibo-username">{{ comment.name }}</span>
+                </div>
+                <span>{{ comment.time }}</span>
+              </div>
+              <div>{{ comment.content }}</div>
+              <el-divider></el-divider>
+            </div>
+          </template>
+        </el-collapse-item>
+      </el-collapse>
     </el-card>
+
+    <!-- 评论弹窗 -->
+    <el-dialog :visible.sync="dialogVisible" title="评论" width="700px">
+      <el-form ref="commentForm" :model="formData" label-width="0px">
+        <el-form-item label="">
+          <el-input
+            type="textarea"
+            :rows="6"
+            v-model="formData.comment"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-row :gutter="16">
+          <el-col :span="12">
+            <el-button @click="handleClose">取消</el-button>
+          </el-col>
+          <el-col :span="12">
+            <el-button type="primary" @click="submitForm">确定</el-button>
+          </el-col>
+        </el-row>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs' // 导入日期js
 import { mapState } from 'vuex'
-import { getFavoriteDreamsApi, getDreamCommentListApi } from '@/api/dream'
+import {
+  getFavoriteDreamsApi,
+  getDreamCommentListApi,
+  publishCommentApi,
+  likeApi,
+  cancelLikeApi,
+  favoriteApi,
+  cancelFavoriteApi
+} from '@/api/dream'
 import { getUserInfoApi } from '@/api/user'
 export default {
   name: 'collect',
 
   data () {
     return {
+      dialogVisible: false,
+
+      formData: {
+        comment: ''
+      },
+
       // 单个评论
       comment: {
         name: '', content: '', time: ''
@@ -105,7 +184,14 @@ export default {
 
         //   star: false // 是否收藏
         // }
-      ]
+      ],
+
+      actionPost: {
+        // 记录当前操作的微博项
+        index: '',
+        post: null,
+        dreamId: ''
+      }
     }
   },
 
@@ -196,7 +282,90 @@ export default {
     openComment (row, index) {
       this.actionPost.index = index
       this.actionPost.post = row
+      this.actionPost.dreamId = this.weiboPosts[index].id
+      // console.log('当前操作项信息', this.actionPost)
+
       this.dialogVisible = true
+    },
+    handleClose () {
+      this.formData = {
+        comment: ''
+      }
+      this.dialogVisible = false
+    },
+
+    async submitForm () {
+      // 在这里执行提交评论的逻辑
+      // 可以使用 this.formData.comment 访问评论内容
+      // 这里仅演示如何关闭对话框
+      /* 模拟评论输入交互 */
+      const username = await this.getCommentUserName(this.token)
+
+      try {
+        const res = await publishCommentApi({
+          dreamID: this.actionPost.dreamId,
+          userID: this.token,
+          commentContent: this.formData.comment
+        })
+        if (res.code === 1) {
+          // this.actionPost.post  当前操作的微博项
+          this.weiboPosts[this.actionPost.index].comments.push({
+            name: username,
+            content: this.formData.comment,
+            time: dayjs().format('YYYY-MM-DD HH:mm:ss')
+          })
+          this.handleClose()
+        }
+      } catch (e) {
+      }
+    },
+
+    // 用户点赞
+    async like () {
+      try {
+        if (!this.actionPost.post.up) {
+          const res = await likeApi({
+            userID: this.token,
+            dreamID: this.actionPost.dreamId
+          })
+          if (res.code === 1) {
+            this.actionPost.post.up = true
+          }
+        } else {
+          const res = await cancelLikeApi({
+            userID: this.token,
+            dreamID: this.actionPost.dreamId
+          })
+          if (res.code === 1) {
+            this.actionPost.post.up = false
+          }
+        }
+      } catch (e) {
+      }
+    },
+
+    // 用户收藏
+    async star () {
+      try {
+        if (!this.actionPost.post.star) {
+          const res = await favoriteApi({
+            userID: this.token,
+            dreamID: this.actionPost.dreamId
+          })
+          if (res.code === 1) {
+            this.actionPost.post.star = true
+          }
+        } else {
+          const res = await cancelFavoriteApi({
+            userID: this.token,
+            dreamID: this.actionPost.dreamId
+          })
+          if (res.code === 1) {
+            this.actionPost.post.star = false
+          }
+        }
+      } catch (e) {
+      }
     }
   }
 }
@@ -208,6 +377,15 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+}
+::v-deep .el-icon-arrow-right:before {
+  content: "展开";
+}
+::v-deep .el-collapse-item__arrow.is-active {
+  transform: rotate(0deg);
+  &::before {
+    content: "收起";
+  }
 }
 
 .upActive {
@@ -255,7 +433,6 @@ export default {
 .weibo-add-button {
     display: none;
 }
-
 
 .ava-box{
   display: flex;

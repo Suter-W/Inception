@@ -47,3 +47,35 @@ export const publishCommentApi = (data) => {
     data: data
   })
 }
+
+export const likeApi = (data) => {
+  return request({
+    url: '/World/like',
+    method: 'GET',
+    params: data
+  })
+}
+
+export const cancelLikeApi = (data) => {
+  return request({
+    url: '/World/cancelLike',
+    method: 'GET',
+    params: data
+  })
+}
+
+export const favoriteApi = (data) => {
+  return request({
+    url: '/World/favorite',
+    method: 'GET',
+    params: data
+  })
+}
+
+export const cancelFavoriteApi = (data) => {
+  return request({
+    url: '/World/cancelFavorite',
+    method: 'GET',
+    params: data
+  })
+}

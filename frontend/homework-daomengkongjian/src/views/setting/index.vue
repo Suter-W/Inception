@@ -28,8 +28,34 @@
 </template>
 
 <script>
+import { getUserInfoApi } from '@/api/user'
+import { mapMutations } from 'vuex'
+import { mapState } from 'vuex'
 export default {
+  computed: {
+    ...mapState('user', ['token'])
+  },
+
+  created () {
+    // console.log(this.token)
+    this.getUserInfo()
+  },
+
   methods: {
+    // 退出登录
+    ...mapMutations('user', ['logout']),
+
+    // 获取用户信息
+    async getUserInfo () {
+      try {
+        this.userInfo = await getUserInfoApi({
+          id: this.token
+        })
+        this.name = this.userInfo.data.userName
+        this.avatar = this.userInfo.data.userAvatar
+      } catch (e) {}
+    },
+
     // handleMenuSelect(index) {
     //   // 在这里处理菜单点击事件
     //   if (index === "myAccount") {
@@ -40,29 +66,37 @@ export default {
     //     // 处理账号设置菜单点击事件
     //   }
     // },
-    handleMenuSelect(index) {
-  switch (index) {
-    case 'myAccount':
-      this.$router.push({ path: '/setting/mine' });
-      break;
-    case 'notifications':
-      this.$router.push({ path: '/setting/message' });
-      break;
-    case 'infoset':
-      this.$router.push({ path: '/setting/infoset' });
-      break;
-    default:
-      // 默认处理
-      break;
-  }
-}
-,
-    handleLogout() {
+    handleMenuSelect (index) {
+      switch (index) {
+        case 'mine':
+          this.$router.push({ path: '/setting/mine' })
+          break
+        case 'infoset':
+          this.$router.push({ path: '/setting/infoset' })
+          break
+        default:
+          // 默认处理
+          break
+      }
+    },
+    handleLogout () {
       // 处理退出按钮点击事件
       // 可以执行退出逻辑，例如注销用户或跳转到登录页面
-    },
-  },
-};
+      this.$confirm('是否退出登录?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.logout()
+        this.$message({
+          type: 'info',
+          message: '已退出'
+        })
+      }).catch(() => {
+      })
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -71,7 +105,6 @@ export default {
 .page {
   display: flex;
   height:calc(100vh - 80px - 40px)
-  
 }
 
 .el-aside {
@@ -118,9 +151,6 @@ export default {
   padding: 20px;
   // background-color: #ecf5ff;
   background: url('/src/assets/background.jpg');
-  
-  
-  
 }
 
 </style>

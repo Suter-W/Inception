@@ -62,11 +62,6 @@ const routes = [
             component: () => import('@/views/setting/children/infoset')
           },
           {
-            path: '/setting/message',
-            name:'message',
-            component: () => import('@/views/setting/children/message')
-          },
-          {
             path: '/setting/mine',
             name:'mine',
             component: () => import('@/views/setting/children/mine')

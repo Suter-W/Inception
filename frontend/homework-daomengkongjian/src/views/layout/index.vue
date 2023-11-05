@@ -47,9 +47,6 @@ export default {
     ...mapState('user', ['token'])
   },
 
-  mounted () {
-
-  },
   created () {
     // console.log(this.token)
     this.getUserInfo()
@@ -77,7 +74,6 @@ export default {
       console.log(key, keyPath)
     }
   }
-
 }
 </script>
 

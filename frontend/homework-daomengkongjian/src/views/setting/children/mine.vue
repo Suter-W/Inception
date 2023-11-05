@@ -22,15 +22,41 @@
 </template>
 
 <script>
+import { getUserInfoApi } from '@/api/user'
+import { mapState } from 'vuex'
+
 export default {
-  data() {
+  data () {
     return {
+      userInfo: {},
       avatarUrl: 'path_to_avatar_image.jpg',
       nickname: 'UserNickname',
       bio: 'A short bio describing the user...'
-    };
+    }
+  },
+
+  computed: {
+    ...mapState('user', ['token'])
+  },
+
+  created () {
+    // console.log(this.token)
+    this.getUserInfo()
+  },
+
+  methods: {
+    // 获取用户信息
+    async getUserInfo () {
+      try {
+        this.userInfo = await getUserInfoApi({
+          id: this.token
+        })
+        this.nickname = this.userInfo.data.userName
+        this.avatarUrl = this.userInfo.data.userAvatar
+      } catch (e) {}
+    }
   }
-};
+}
 </script>
 
 <style scoped lang="scss">

@@ -25,27 +25,54 @@
 </template>
 
 <script>
+import { getUserInfoApi } from '@/api/user'
+import { mapState } from 'vuex'
+
 export default {
-  data() {
+  data () {
     return {
+      userInfo: {},
       avatarUrl: '',
       nickname: '',
       bio: ''
-    };
+    }
   },
+
+  computed: {
+    ...mapState('user', ['token'])
+  },
+
+  created () {
+    // console.log(this.token)
+    this.getUserInfo()
+  },
+
   methods: {
-    handleAvatarChange(event) {
-      const file = event.target.files[0];
-      this.avatarUrl = URL.createObjectURL(file);
+    // 获取用户信息
+    async getUserInfo () {
+      try {
+        this.userInfo = await getUserInfoApi({
+          id: this.token
+        })
+        this.nickname = this.userInfo.data.userName
+        this.avatarUrl = this.userInfo.data.userAvatar
+      } catch (e) {}
     },
-    saveSettings() {
-      console.log('保存设置');
-      console.log('昵称:', this.nickname);
-      console.log('头像URL:', this.avatarUrl);
-      console.log('个性签名:', this.bio);
+
+    handleAvatarChange (event) {
+      const file = event.target.files[0]
+      this.avatarUrl = URL.createObjectURL(file)
+    },
+
+    // 保存用户信息修改(后端待完善)
+    saveSettings () {
+      console.log('保存设置')
+      console.log('昵称:', this.nickname)
+      console.log('头像URL:', this.avatarUrl)
+      console.log('个性签名:', this.bio)
     }
   }
-};
+}
 </script>
 
 <style scoped lang="scss">
@@ -106,11 +133,8 @@ textarea {
   }
 }
 .el-button--default{
-  
   span {
     color: #000;
   }
 }
 </style>
-
-

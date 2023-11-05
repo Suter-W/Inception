@@ -155,7 +155,7 @@
 <script>
 import dayjs from 'dayjs' // 导入日期js
 import { mapState } from 'vuex'
-import { getDreamsApi, getDreamCommentListApi } from '@/api/dream'
+import { getDreamsApi, getDreamCommentListApi, publishCommentApi } from '@/api/dream'
 import { getUserInfoApi } from '@/api/user'
 export default {
   data () {
@@ -223,7 +223,8 @@ export default {
       actionPost: {
         // 记录当前操作的微博项
         index: '',
-        post: null
+        post: null,
+        dreamId: ''
       }
     }
   },
@@ -318,6 +319,8 @@ export default {
     openComment (row, index) {
       this.actionPost.index = index
       this.actionPost.post = row
+      this.actionPost.dreamId = this.weiboPosts[index].id
+      // console.log('当前操作项信息', this.actionPost)
 
       this.dialogVisible = true
     },
@@ -327,19 +330,31 @@ export default {
       }
       this.dialogVisible = false
     },
-    submitForm () {
+
+    async submitForm () {
       // 在这里执行提交评论的逻辑
       // 可以使用 this.formData.comment 访问评论内容
       // 这里仅演示如何关闭对话框
       /* 模拟评论输入交互 */
+      const username = await this.getCommentUserName(this.token)
 
-      // this.actionPost.post  当前操作的微博项
-      this.weiboPosts[this.actionPost.index].comments.push({
-        name: 'z',
-        content: this.formData.comment,
-        time: dayjs().format('YYYY-MM-DD HH:mm:ss')
-      })
-      this.handleClose()
+      try {
+        const res = await publishCommentApi({
+          dreamID: this.actionPost.dreamId,
+          userID: this.token,
+          commentContent: this.formData.comment
+        })
+        if (res.code === 1) {
+          // this.actionPost.post  当前操作的微博项
+          this.weiboPosts[this.actionPost.index].comments.push({
+            name: username,
+            content: this.formData.comment,
+            time: dayjs().format('YYYY-MM-DD HH:mm:ss')
+          })
+          this.handleClose()
+        }
+      } catch (e) {
+      }
     }
   }
 }

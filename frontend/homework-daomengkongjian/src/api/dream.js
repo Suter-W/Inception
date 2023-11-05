@@ -39,3 +39,11 @@ export const getFavoriteDreamsApi = (data) => {
     params: data
   })
 }
+
+export const publishCommentApi = (data) => {
+  return request({
+    url: '/World/publishComment',
+    method: 'POST',
+    data: data
+  })
+}

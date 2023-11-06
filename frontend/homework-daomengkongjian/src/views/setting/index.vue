@@ -35,6 +35,9 @@ export default {
   computed: {
     ...mapState('user', ['token'])
   },
+  mounted(){
+    this.$emit('route-change', "设置",4);
+  },
 
   created () {
     // console.log(this.token)
@@ -104,17 +107,21 @@ export default {
 
 .page {
   display: flex;
-  height:calc(100vh - 80px - 40px)
+  // height:calc(100vh - 80px - 40px)
+  height: 100%;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .el-aside {
-  width: 260px;
-  padding: 20px;
+  padding: 0;
+  padding-top: 20px;
   height:100%;
   display:flex;
   flex-direction: column;
   .menu{
     flex:1;
+    background-color: #f0f2f5;
     .el-menu-item{
       display: flex;
     align-items: center;
@@ -148,7 +155,7 @@ export default {
 
 .content {
   flex: 1;
-  padding: 20px;
+  // padding: 20px;
   // background-color: #ecf5ff;
   background: url('/src/assets/background.jpg');
 }

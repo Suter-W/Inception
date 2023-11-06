@@ -31,7 +31,7 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
-      userInfo: {},
+userInfo: {},
       avatarUrl: '',
       nickname: '',
       bio: ''
@@ -63,7 +63,7 @@ export default {
       const file = event.target.files[0]
       this.avatarUrl = URL.createObjectURL(file)
     },
-
+    
     // 保存用户信息修改(后端待完善)
     saveSettings () {
       console.log('保存设置')
@@ -76,6 +76,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.content {
+  flex: 1;
+  padding:40px;
+  // background-color: #ecf5ff;
+  //background: url('../../src/assets/background.jpg');
+}
 
 .mine {
   padding: 30px;
@@ -133,8 +139,11 @@ textarea {
   }
 }
 .el-button--default{
+  
   span {
     color: #000;
   }
 }
 </style>
+
+

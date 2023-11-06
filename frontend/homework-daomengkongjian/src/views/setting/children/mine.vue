@@ -64,7 +64,7 @@ export default {
 
 .content {
   flex: 1;
-  padding: 20px;
+  padding: 40px;
   // background-color: #ecf5ff;
   background: url('/src/assets/background.jpg');
 }
@@ -76,7 +76,7 @@ export default {
 }
 
 .info {
-  padding: 30px;
+  padding: 20px;
   width: 80%;
   margin: 0 auto;
   border: 1px solid #eee;

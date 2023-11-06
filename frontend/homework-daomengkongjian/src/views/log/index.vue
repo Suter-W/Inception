@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="weibo-list">
     <el-card
       class="weibo-card"
@@ -19,7 +20,7 @@
           style="margin-right: 12px"
           :class="{ upActive: post.up }"
           :icon="post.up ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
-          @click="like"
+          @click="like(post,index)"
         />
         <font-awesome-icon
           icon="fa-regular fa-comment"
@@ -30,7 +31,7 @@
           style="margin-right: 12px"
           :class="{ starActive: post.star }"
           :icon="post.star ? 'fa-solid fa-star' : 'fa-regular fa-star'"
-          @click="star"
+          @click="star(post,index)"
         />
 
         <!-- <v-icon name="heart"  style="margin-right: 12px" :class="{'upActive':post.up}" @click="post.up=!post.up"/>
@@ -79,6 +80,50 @@
         </el-collapse-item>
       </el-collapse>
     </el-card>
+  </div>
+    <el-button
+      class="weibo-add-button"
+      type="text"
+      icon="el-icon-moon-night"
+      @click="showMoreOptions"
+    >
+    </el-button>
+    <div class="weibo-more-options" v-show="showOptions">
+      <div>
+        <el-tooltip
+          class="item"
+          effect="light"
+          content="写梦"
+          placement="bottom"
+        >
+          <el-button type="text" icon="el-icon-edit" @click="handleLink('addlog')"></el-button>
+        </el-tooltip>
+      </div>
+      <div>
+        <el-tooltip class="item" effect="light" content="主页" placement="top">
+          <el-button type="text" icon="el-icon-s-home" @click="handleLink('home')"></el-button>
+        </el-tooltip>
+      </div>
+      <div>
+        <el-tooltip
+          class="item"
+          effect="light"
+          content="我的收藏"
+          placement="top"
+          ><el-button @click="handleLink('collect')" type="text" icon="el-icon-star-off"></el-button>
+        </el-tooltip>
+      </div>
+      <div>
+        <el-tooltip
+          class="item"
+          effect="light"
+          content="账号及设置"
+          placement="bottom"
+          ><el-button type="text" icon="el-icon-setting" @click="handleLink('setting')"></el-button>
+        </el-tooltip>
+      </div>
+    </div>
+
 
     <!-- 评论弹窗 -->
     <el-dialog :visible.sync="dialogVisible" title="评论" width="700px">
@@ -122,6 +167,7 @@ export default {
   name: 'log',
   data () {
     return {
+      showOptions:false,
       dialogVisible: false,
 
       formData: {
@@ -196,12 +242,17 @@ export default {
   computed: {
     ...mapState('user', ['token'])
   },
-
+  mounted() {
+    this.$emit('route-change', "历史梦境",2); // 触发路由变化事件
+  },
   created () {
     this.loadData()
   },
 
   methods: {
+    showMoreOptions(){
+      this.showOptions = !this.showOptions
+    },
     async loadData () {
       this.getDreams()
     },
@@ -319,7 +370,10 @@ export default {
     },
 
     // 用户点赞
-    async like () {
+    async like (row,index) {
+      this.actionPost.index = index
+      this.actionPost.post = row
+      this.actionPost.dreamId = this.weiboPosts[index].id
       try {
         if (!this.actionPost.post.up) {
           const res = await likeApi({
@@ -343,7 +397,10 @@ export default {
     },
 
     // 用户收藏
-    async star () {
+    async star (row,index) {
+      this.actionPost.index = index
+      this.actionPost.post = row
+      this.actionPost.dreamId = this.weiboPosts[index].id
       try {
         if (!this.actionPost.post.star) {
           const res = await favoriteApi({
@@ -428,8 +485,51 @@ export default {
 }
 
 .weibo-add-button {
-    display: none;
+  position: fixed;
+  bottom: 60px;
+  right: 100px;
+  width: 45px;
+  height: 45px;
+  color: #443B77;
 }
+.weibo-more-options {
+  position: fixed;
+  bottom: 60px;
+  right: 100px;
+  display: flex;
+  flex-direction: column;
+  div {
+    width: 40px;
+    height: 40px;
+    transition: transform 0.3s; /* 设置位移过渡 */
+  }
+  .el-button {
+    height: 100%;
+    padding: 0;
+  }
+  div:nth-child(1) {
+    position: absolute;
+    left: -102px;
+    bottom: 0px;
+  }
+
+  div:nth-child(2) {
+    position: absolute;
+    left: -72px;
+    bottom: 55px;
+  }
+  div:nth-child(3) {
+    position: absolute;
+    left: -9px;
+    bottom: 54px;
+  }
+  div:nth-child(4) {
+    position: absolute;
+    left: 22px;
+    bottom: 0px;
+  }
+}
+
 
 .ava-box{
   display: flex;

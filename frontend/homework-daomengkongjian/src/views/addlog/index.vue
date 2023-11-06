@@ -23,6 +23,48 @@
       </div>
     </el-card>
     </div>
+    <el-button
+      class="weibo-add-button"
+      type="text"
+      icon="el-icon-edit"
+      @click="showMoreOptions"
+    >
+    </el-button>
+    <div class="weibo-more-options" v-show="showOptions">
+      <div>
+        <el-tooltip
+          class="item"
+          effect="light"
+          content="我的收藏"
+          placement="bottom"
+        >
+          <el-button type="text" icon="el-icon-star-off" @click="handleLink('collect')"></el-button>
+        </el-tooltip>
+      </div>
+      <div>
+        <el-tooltip class="item" effect="light" content="主页" placement="top">
+          <el-button type="text" icon="el-icon-s-home" @click="handleLink('home')"></el-button>
+        </el-tooltip>
+      </div>
+      <div>
+        <el-tooltip
+          class="item"
+          effect="light"
+          content="历史梦境"
+          placement="top"
+          ><el-button @click="handleLink('log')" type="text" icon="el-icon-moon-night"></el-button>
+        </el-tooltip>
+      </div>
+      <div>
+        <el-tooltip
+          class="item"
+          effect="light"
+          content="账号及设置"
+          placement="bottom"
+          ><el-button type="text" icon="el-icon-setting" @click="handleLink('setting')"></el-button>
+        </el-tooltip>
+      </div>
+    </div>
 
     <!-- ... 其他微博内容 ... -->
   </div>
@@ -39,6 +81,7 @@ export default {
 
   data () {
     return {
+      showOptions: false,
       userInfo: {},
       name: '',
       avatar: '',
@@ -52,12 +95,24 @@ export default {
     ...mapState('user', ['token'])
   },
 
+  mounted(){
+    this.$emit('route-change','写梦',1)
+  },
+
   created () {
     // console.log(this.token)
     this.getUserInfo()
   },
 
   methods: {
+    handleLink (linknName) {
+      this.$router.push({
+        name: linknName
+      })
+    },
+    showMoreOptions () {
+      this.showOptions = !this.showOptions
+    },
     // 获取用户信息
     async getUserInfo () {
       try {
@@ -144,7 +199,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .weibo{
   width: 1000px;
   margin: 30px auto;
@@ -176,5 +231,50 @@ export default {
 }
 .weibo-post-buttons el-button {
   margin-left: 10px;
+}
+.weibo-add-button {
+  position: fixed;
+  bottom: 60px;
+  right: 100px;
+  width: 45px;
+  height: 45px;
+  color: #443B77;
+}
+.weibo-more-options {
+  position: fixed;
+  bottom: 60px;
+  right: 100px;
+  display: flex;
+  flex-direction: column;
+  div {
+    width: 40px;
+    height: 40px;
+    transition: transform 0.3s; /* 设置位移过渡 */
+  }
+  .el-button {
+    height: 100%;
+    padding: 0;
+  }
+  div:nth-child(1) {
+    position: absolute;
+    left: -102px;
+    bottom: 0px;
+  }
+
+  div:nth-child(2) {
+    position: absolute;
+    left: -72px;
+    bottom: 55px;
+  }
+  div:nth-child(3) {
+    position: absolute;
+    left: -9px;
+    bottom: 54px;
+  }
+  div:nth-child(4) {
+    position: absolute;
+    left: 22px;
+    bottom: 0px;
+  }
 }
 </style>

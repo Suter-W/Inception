@@ -10,7 +10,6 @@
             </el-col>
             <el-col :span='1'>
             <el-divider  direction="vertical"></el-divider>
-
             </el-col>
 
           <el-col :span="13">
@@ -39,7 +38,7 @@
 
           <div class="usernameHZ">
             <!-- <div class="img2"><img src="" alt="" /></div> -->
-            <el-form-item prop="password" label="密码">
+            <el-form-item prop="password" label="密 码">
               <el-input
                 placeholder="请输入密码"
                 v-model="form.password"
@@ -217,7 +216,7 @@ export default {
     }
     .usernameHZ {
       position: relative;
-width: 100%;
+      width: 100%;
       ::v-deep .el-input__inner {
         padding-left: 37px;
 
@@ -287,10 +286,19 @@ width: 100%;
 }
 
 .img3 {
-  width: 100%;
-  height: 100%;
-  background-repeat: no-repeat;
+  // width: 100%;
+  // height: 100%;
+  // background-repeat: no-repeat;
+  // background-size: cover;
+  min-height: 100%;width: 100%;
+  font-family: JetBrains Mono Medium;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #0e92b3; */
+  background: url('/src/assets/background.jpg');
   background-size: cover;
+  position: fixed;
 }
 
 .svg-container {

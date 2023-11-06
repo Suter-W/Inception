@@ -25,7 +25,7 @@
           style="margin-right: 12px"
           :class="{ upActive: post.up }"
           :icon="post.up ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
-          @click="like"
+          @click="like(post,index)"
         />
         <font-awesome-icon
           icon="fa-regular fa-comment"
@@ -37,7 +37,7 @@
           style="margin-right: 12px"
           :class="{ starActive: post.star }"
           :icon="post.star ? 'fa-solid fa-star' : 'fa-regular fa-star'"
-          @click="star"
+          @click="star(post,index)"
         />
 
         <!-- <v-icon name="heart"  style="margin-right: 12px" :class="{'upActive':post.up}" @click="post.up=!post.up"/>
@@ -74,7 +74,9 @@
                     class="weibo-avatar"
                     :src="post.avatarUrl"
                     size="small"
-                  ></el-avatar>
+
+                  >
+                </el-avatar>
                   <span class="weibo-username">{{ comment.name }}</span>
                 </div>
                 <span>{{ comment.time }}</span>
@@ -90,7 +92,7 @@
     <el-button
       class="weibo-add-button"
       type="text"
-      icon="el-icon-edit"
+      icon="el-icon-s-home"
       @click="showMoreOptions"
     >
     </el-button>
@@ -100,14 +102,14 @@
           class="item"
           effect="light"
           content="我的收藏"
-          placement="left"
+          placement="bottom"
         >
           <el-button type="text" icon="el-icon-star-off" @click="handleLink('collect')"></el-button>
         </el-tooltip>
       </div>
       <div>
         <el-tooltip class="item" effect="light" content="写梦" placement="top">
-          <el-button type="text" icon="el-icon-plus" @click="handleLink('addlog')"></el-button>
+          <el-button type="text" icon="el-icon-edit" @click="handleLink('addlog')"></el-button>
         </el-tooltip>
       </div>
       <div>
@@ -124,7 +126,7 @@
           class="item"
           effect="light"
           content="账号及设置"
-          placement="right"
+          placement="bottom"
           ><el-button type="text" icon="el-icon-setting" @click="handleLink('setting')"></el-button>
         </el-tooltip>
       </div>
@@ -244,6 +246,7 @@ export default {
   },
 
   mounted () {
+    this.$emit('route-change','主页',0);
   },
 
   created () {
@@ -267,6 +270,15 @@ export default {
 
       for (let i = 0; i < queue.length; i++) {
         const comments = await this.getDreamCommentList(queue[i].dreamID)
+        if (queue[i].dreamStatus === 1){
+          if(this.token === queue[i].userID){
+            queue[i].userName = queue[i].userName + "(匿名发布)";
+          }
+          else{
+            queue[i].userName = "匿名用户";
+            queue[i].userAvatar = "../../assets/dikede.png"
+          }
+        }
 
         // 封装dream
         const newDream = {
@@ -368,7 +380,10 @@ export default {
     },
 
     // 用户点赞
-    async like () {
+    async like (row,index) {
+      this.actionPost.index = index
+      this.actionPost.post = row
+      this.actionPost.dreamId = this.weiboPosts[index].id
       try {
         if (!this.actionPost.post.up) {
           const res = await likeApi({
@@ -392,7 +407,10 @@ export default {
     },
 
     // 用户收藏
-    async star () {
+    async star (row,index) {
+      this.actionPost.index = index
+      this.actionPost.post = row
+      this.actionPost.dreamId = this.weiboPosts[index].id
       try {
         if (!this.actionPost.post.star) {
           const res = await favoriteApi({
@@ -482,6 +500,7 @@ export default {
   right: 100px;
   width: 45px;
   height: 45px;
+  color:#443B77
 }
 
 .weibo-more-options {

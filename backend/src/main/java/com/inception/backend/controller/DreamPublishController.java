@@ -20,7 +20,7 @@ public class DreamPublishController {
     private DreamPublishService dreamPublishService;
 
     /**
-     * 用户发布梦境
+     * 用户发布梦境1
      * @param dream
      * @return
      */

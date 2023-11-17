@@ -173,6 +173,8 @@ export default {
   data () {
     return {
       dialogVisible: false,
+      // defaultDir:require('@/assets/' + 'dikede.png'),
+      defaultDir: '@/assets/',
 
       formData: {
         comment: ''
@@ -276,7 +278,8 @@ export default {
           }
           else{
             queue[i].userName = "匿名用户";
-            queue[i].userAvatar = "../../assets/dikede.png"
+            queue[i].userAvatar = require(this.defaultDir + 'dikede.png');
+            console.log(queue[i].userAvatar);
           }
         }
 

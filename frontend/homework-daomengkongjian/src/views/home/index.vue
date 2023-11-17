@@ -9,60 +9,55 @@
         <el-avatar
           class="weibo-avatar"
           :src="post.avatarUrl"
-          size="small"
+          size="large"
         ></el-avatar>
         <span class="weibo-username">{{ post.username }}</span>
       </div>
       <div class="weibo-content">
         {{ post.content }}
       </div>
-      <el-divider></el-divider>
+      <!-- <el-divider></el-divider> -->
       <div class="weibo-actions">
         <!-- <font-awesome-icon :icon="['far', 'heart']" style="margin-right: 12px" /> -->
         <!-- <font-awesome-icon icon="fa-solid fa-user-secret" /> -->
         <!-- @click="post.up = !post.up" -->
-        <font-awesome-icon
+        <el-badge :value="post.likes" :max="99" 
+          class="item" :style="{marginRight:'24px'}">
+          <font-awesome-icon
           style="margin-right: 12px"
           :class="{ upActive: post.up }"
+          :style="{ fontSize: '24px'}"
           :icon="post.up ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
           @click="like(post,index)"
-        />
-        <font-awesome-icon
+          />
+        </el-badge>
+        
+        <el-badge :value="post.comments.length" :max="10" 
+          class="item" :style="{marginRight:'24px',marginLeft:'24px'}">
+          <font-awesome-icon
           icon="fa-regular fa-comment"
-          style="margin-right: 12px"
+          :style="{ fontSize: '24px'}"
           @click="openComment(post, index)"
         />
+        </el-badge>
         <!-- @click="post.star = !post.star" -->
+
         <font-awesome-icon
           style="margin-right: 12px"
           :class="{ starActive: post.star }"
+          :style="{ fontSize: '24px','margin-left':'24px' }"
           :icon="post.star ? 'fa-solid fa-star' : 'fa-regular fa-star'"
           @click="star(post,index)"
         />
-
+        <!-- <el-divider></el-divider> -->
         <!-- <v-icon name="heart"  style="margin-right: 12px" :class="{'upActive':post.up}" @click="post.up=!post.up"/>
         <v-icon name="comments"  style="margin-right: 12px" />
         <v-icon name="fa-star"  :class="{'starActive':post.star}" @click="post.star=!post.star"/> -->
       </div>
-      <el-collapse accordion v-if="post.comments && post.comments.length > 0">
+      <el-divider class="myDivider"></el-divider>
+      <!-- <div class="commentStyle">
+        <el-collapse accordion v-if="post.comments && post.comments.length > 0">
         <el-collapse-item>
-          <!-- <template slot="title">
-            <div>
-              <div>   {{ post.comments[0].content }}</div>
-            <el-divider v-if="post.comments.length > 1"></el-divider>
-          </div>
-
-          </template>
-
-          <template
-            v-if="post.comments.length > 1"
-            v-for="comment in post.comments.slice(1)"
-          >
-            <div>
-              {{ comment.content }}
-              <el-divider></el-divider>
-            </div>
-          </template> -->
           <template
             v-if="post.comments.length"
             v-for="comment in post.comments"
@@ -74,7 +69,6 @@
                     class="weibo-avatar"
                     :src="post.avatarUrl"
                     size="small"
-
                   >
                 </el-avatar>
                   <span class="weibo-username">{{ comment.name }}</span>
@@ -87,6 +81,43 @@
           </template>
         </el-collapse-item>
       </el-collapse>
+      </div> -->
+      <div class="commentStyle">
+        <div class="commentContent" v-if="post.showComments">
+          <div class="zeroComments" v-if="post.comments.length === 0">暂无评论</div>
+          <div class="haveComments" v-if="post.comments.length > 0">
+            <template
+            v-if="post.comments.length"
+            v-for="comment in post.comments"
+          >
+            <div>
+              <div class="comment-head weibo-header">
+                <div class="ava-box">
+                  <el-avatar
+                    class="weibo-avatar"
+                    :src="post.avatarUrl"
+                    size="small"
+                  >
+                </el-avatar>
+                  <span class="weibo-username" style="font-size: 14px;">&nbsp;{{ comment.name }}</span>
+                </div>
+                <span>{{ comment.time }}</span>
+              </div>
+              <div style="text-indent: 2em;font-size:14px;font-family:'Microsoft YaHei';">{{ comment.content }}</div>
+              <el-divider class="commentDivider"></el-divider>
+            </div>
+          </template>
+          </div>
+        </div>
+        <div class="showButton" @mouseenter="onHover(post,index)" @mouseleave="onLeave(post,index)" @click="commentClick(post,index)">
+          <span class="centerInfo">
+            <i class="el-icon-caret-bottom" v-if="!post.showComments"></i>
+            <span style="font-size: 16px;" v-if="!post.showComments && post.hoverComments">&nbsp;&nbsp;显示评论</span>
+            <i class="el-icon-caret-top" v-if="post.showComments"></i>
+            <span style="font-size: 16px;" v-if="post.showComments && post.hoverComments">&nbsp;&nbsp;隐藏评论</span>
+          </span>
+        </div>
+      </div>
     </el-card>
 
     <el-button
@@ -184,6 +215,19 @@ export default {
       },
 
       // 单个梦境
+      // dream: {
+      //   id: 0,
+      //   avatarUrl: '',
+      //   username: '',
+      //   content: '',
+      //   likes: 0,
+      //   commentsCount: 0,
+      //   favorites: 0,
+      //   up: false, // 是否点赞
+      //   comments: [], // 评论列表
+
+      //   star: false // 是否收藏
+      // },
       dream: {
         id: 0,
         avatarUrl: '',
@@ -290,7 +334,9 @@ export default {
           up: queue[i].isLike,
           star: queue[i].isFavorite,
           comments: comments,
-          commentsCount: comments.length
+          commentsCount: comments.length,
+          showComments: false,
+          hoverComments: false,
         }
         // 将dream装入weiboPost
         this.weiboPosts.push(newDream)
@@ -379,6 +425,28 @@ export default {
       }
     },
 
+    onHover(row,index){
+      // this.actionPost.index = index;
+      // this.actionPost.post = row;
+      this.weiboPosts[index].hoverComments = true;
+    },
+    onLeave(row,index){
+      // this.actionPost.index = index;
+      // this.actionPost.post = row;
+      this.weiboPosts[index].hoverComments = false;
+    },
+
+    commentClick(row,index){
+      this.actionPost.index = index;
+      this.actionPost.post = row;
+      for(let i = 0;i < this.weiboPosts.length;i ++){
+        if(i != index){
+          this.weiboPosts[i].showComments = false;
+        }
+      }
+      this.weiboPosts[index].showComments = !this.weiboPosts[index].showComments;
+    },
+
     // 用户点赞
     async like (row,index) {
       this.actionPost.index = index
@@ -392,6 +460,7 @@ export default {
           })
           if (res.code === 1) {
             this.actionPost.post.up = true
+            this.actionPost.post.likes ++;
           }
         } else {
           const res = await cancelLikeApi({
@@ -400,6 +469,7 @@ export default {
           })
           if (res.code === 1) {
             this.actionPost.post.up = false
+            this.actionPost.post.likes --;
           }
         }
       } catch (e) {
@@ -437,6 +507,41 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+.commentStyle{
+  text-align: center;
+  .commentContent{
+    padding-left: 4%;
+    padding-right: 0%;
+    margin-bottom: 20px;
+    .zeroComments{
+      text-align: center;
+      padding-top: 20px;
+      height: 20px;
+      line-height: 20px;
+    }
+    .haveComments{
+      padding-top: 16px;
+      text-align: left;
+    }
+  }
+  .showButton{
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    height: 40px;
+    background-color: white;
+    border-width: 1px;
+    border-color: #e4e7ed;
+    border-style: solid;
+    line-height: 40px;
+    text-align: center;
+    .centerInfo{
+      text-align: center;
+      color:gray;
+    }
+  }
+}
 .comment-head {
   display: flex;
   justify-content: space-between;
@@ -544,5 +649,12 @@ export default {
   display: flex;
   align-items: center;
   font-size: 16px;
+}
+
+.myDivider{
+  margin-bottom: 0;
+}
+.commentDivider{
+  margin-top: 2px;
 }
 </style>

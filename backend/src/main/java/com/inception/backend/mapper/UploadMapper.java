@@ -6,6 +6,6 @@ import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface UploadMapper {
-    @Update("update user set userAvatar = #{fileURL} where userID = #{userID}")
-    void upload(String fileURL,Integer userID);
+    @Update("update user set userAvatar = #{fileURL},userName = #{userName},userSignature = #{userSignature} where userID = #{userID}")
+    void upload(String fileURL,String userName,String userSignature,Integer userID);
 }

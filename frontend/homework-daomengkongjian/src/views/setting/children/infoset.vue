@@ -6,7 +6,7 @@
       <div class="setting-item">
         <h3>头像设置</h3>
         <input type="file" @change="handleAvatarChange" accept="image/*" class="el-input">
-        <img :src="avatarUrl" alt="Avatar" class="avatar-preview">
+        <!-- <img :src="avatarUrl" alt="Avatar" class="avatar-preview"> -->
       </div>
 
       <div class="setting-item">
@@ -25,13 +25,14 @@
 </template>
 
 <script>
-import { getUserInfoApi } from '@/api/user'
+import { getUserInfoApi,updateAvatarApi } from '@/api/user'
 import { mapState } from 'vuex'
 
 export default {
+
   data () {
     return {
-userInfo: {},
+      userInfo: {},
       avatarUrl: '',
       nickname: '',
       bio: ''
@@ -55,7 +56,8 @@ userInfo: {},
           id: this.token
         })
         this.nickname = this.userInfo.data.userName
-        this.avatarUrl = this.userInfo.data.userAvatar
+        this.avatarUrl = this.userInfo.data.userAvatar,
+        this.bio = this.userInfo.data.userSignature
       } catch (e) {}
     },
 
@@ -65,11 +67,47 @@ userInfo: {},
     },
     
     // 保存用户信息修改(后端待完善)
-    saveSettings () {
-      console.log('保存设置')
-      console.log('昵称:', this.nickname)
-      console.log('头像URL:', this.avatarUrl)
-      console.log('个性签名:', this.bio)
+    async saveSettings () {
+      // console.log('保存设置')
+      // console.log('昵称:', this.nickname)
+      // console.log('头像URL:', this.avatarUrl)
+      // console.log('个性签名:', this.bio)
+      // const res = await publishCommentApi({
+      //     dreamID: this.actionPost.dreamId,
+      //     userID: this.token,
+      //     commentContent: this.formData.comment
+      //   })
+      //   if (res.code === 1) {
+      //     // this.actionPost.post  当前操作的微博项
+      //     this.weiboPosts[this.actionPost.index].comments.push({
+      //       name: username,
+      //       content: this.formData.comment,
+      //       time: dayjs().format('YYYY-MM-DD HH:mm:ss')
+      //     })
+      //     this.handleClose()
+      //   }
+      try{
+        const avatarResponse = await fetch(this.avatarUrl);
+        const avatarBlob = await avatarResponse.blob();
+        const formData = new FormData();
+        formData.append("file",avatarBlob);
+        formData.append("userName",this.nickname);
+        formData.append("userSignature",this.bio);
+        formData.append("userID",this.token);
+        const res = await updateAvatarApi(formData)
+        // {
+        //   file:"D:/Y7000P/DreamRecord/Inception/frontend/homework-daomengkongjian/src/assets/default/defaultAvatar.jpg",
+        //   userID: this.token
+        // }
+        console.log(this.avatarUrl);
+        console.log(avatarBlob);
+        if(res.code === 1){
+          this.$message.success("修改成功！")
+          this.$emit('avatar-change',5);
+        }
+      }catch(e){
+
+      }
     }
   }
 }
@@ -94,7 +132,17 @@ userInfo: {},
   background-color: #f9f9f9;
   opacity: 0.9;
 }
-
+.mine1 {
+  padding: 30px;
+  width: 80%;
+  margin: 0 auto;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  opacity: 0.9;
+}
 .section-title {
   font-size: 28px;
   margin-bottom: 20px;
@@ -127,6 +175,18 @@ textarea {
   height: 150px;
 }
 .el-button{
+  width: 100%;
+  height: 52px;
+  padding: 10px 20px;
+  box-shadow: 0 2px 9px 1px #443B77;
+  border-radius: 8px;
+  border: 0px;
+  span {
+    font-size: 16px;
+    color: #fff;
+  }
+}
+.el-buttons{
   width: 100%;
   height: 52px;
   padding: 10px 20px;

@@ -5,7 +5,11 @@
 
       <div class="info-item">
         <h3>头像</h3>
-        <img src="https://img.zcool.cn/community/018a145e8be3b5a80120a89592780b.jpg@1280w_1l_2o_100sh.jpg" alt="Avatar" class="avatar">
+        <el-avatar
+          class="weibo-avatar"
+          :src="avatarUrl"
+          size="large"
+        ></el-avatar>
       </div>
 
       <div class="info-item">
@@ -29,9 +33,9 @@ export default {
   data () {
     return {
       userInfo: {},
-      avatarUrl: 'path_to_avatar_image.jpg',
-      nickname: 'UserNickname',
-      bio: 'A short bio describing the user...'
+      avatarUrl: '',
+      nickname: '',
+      bio: ''
     }
   },
 
@@ -53,6 +57,7 @@ export default {
         })
         this.nickname = this.userInfo.data.userName
         this.avatarUrl = this.userInfo.data.userAvatar
+        this.bio = this.userInfo.data.userSignature
       } catch (e) {}
     }
   }

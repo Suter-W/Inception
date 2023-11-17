@@ -13,6 +13,10 @@ public class AvatarRequest {
 
     private MultipartFile file;
 
+    private String userName;
+
+    private String userSignature;
+
     private Integer userID;
 
 }

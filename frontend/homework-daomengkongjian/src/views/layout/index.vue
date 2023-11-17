@@ -79,7 +79,8 @@ export default {
       logOutVisible: false,
       userInfo: {},
       name: '',
-      avatar: ''
+      yourAvatarUrl:''
+      
 
     }
   },
@@ -97,8 +98,12 @@ export default {
       this.$router.push('/home');
     },
     getTitle(showTitle,val){
-      this.title = showTitle;
-      this.showIcon = val;
+      if(val === 5){
+        location.reload();
+      }else{
+        this.title = showTitle;
+        this.showIcon = val;
+      }
     },
 
     // 退出登录
@@ -111,7 +116,8 @@ export default {
           id: this.token
         })
         this.name = this.userInfo.data.userName
-        this.avatar = this.userInfo.data.userAvatar
+        // this.avatar = this.userInfo.data.userAvatar
+        this.yourAvatarUrl = this.userInfo.data.userAvatar
       } catch (e) { }
     },
 

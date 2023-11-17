@@ -22,13 +22,13 @@ public class AvatarUploadController {
     private AvatarUploadService avatarUploadService;
 
     @PostMapping("/upload")
-    public Result avatarUpload(@RequestParam("file") MultipartFile file,@RequestParam("userID") Integer userID) throws IOException {
+    public Result avatarUpload(@RequestParam("file") MultipartFile file,@RequestParam("userName") String userName,@RequestParam("userSignature") String userSignature,@RequestParam("userID") Integer userID) throws IOException {
         if(file.isEmpty()){
             return Result.error("上传失败！");
         }
         else{
             String fileURL = OssUploadUtil.uploadImage(file);
-            avatarUploadService.avatarUpload(fileURL,userID);
+            avatarUploadService.avatarUpload(fileURL,userName,userSignature,userID);
         }
         return Result.success();
     }

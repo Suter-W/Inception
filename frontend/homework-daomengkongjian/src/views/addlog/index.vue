@@ -86,8 +86,8 @@ export default {
       name: '',
       avatar: '',
 
-      postContent: '' // 用来存储发布内容
-      // yourAvatarUrl: "your_avatar.jpg", // 设置用户头像的URL
+      postContent: '', // 用来存储发布内容
+      yourAvatarUrl: '', // 设置用户头像的URL
     }
   },
 
@@ -120,7 +120,8 @@ export default {
           id: this.token
         })
         this.name = this.userInfo.data.userName
-        this.avatar = this.userInfo.data.userAvatar
+        // this.avatar = this.userInfo.data.userAvatar
+        this.yourAvatarUrl = this.userInfo.data.userAvatar
       } catch (e) {}
     },
 

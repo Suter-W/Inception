@@ -22,7 +22,7 @@
 
     <!-- 右侧内容区域 -->
     <div class="content">
-      <router-view></router-view>
+      <router-view @avatar-change="avatarChange"></router-view>
     </div>
   </div>
 </template>
@@ -32,6 +32,11 @@ import { getUserInfoApi } from '@/api/user'
 import { mapMutations } from 'vuex'
 import { mapState } from 'vuex'
 export default {
+  data () {
+    return {
+      defaultUI:false,
+    }
+  },
   computed: {
     ...mapState('user', ['token'])
   },
@@ -47,6 +52,13 @@ export default {
   methods: {
     // 退出登录
     ...mapMutations('user', ['logout']),
+
+    avatarChange(val){
+      if(val === 5){
+        this.defaultUI = true;
+        this.$emit('route-change','设置',5);
+      }
+    },
 
     // 获取用户信息
     async getUserInfo () {
@@ -75,7 +87,12 @@ export default {
           this.$router.push({ path: '/setting/mine' })
           break
         case 'infoset':
-          this.$router.push({ path: '/setting/infoset' })
+          if(this.defaultUI){
+            this.$router.push({ path: '/setting/mine' })
+            this.defaultUI = false;
+          }else{
+            this.$router.push({ path: '/setting/infoset' })
+          }
           break
         default:
           // 默认处理
@@ -120,20 +137,19 @@ export default {
   display:flex;
   flex-direction: column;
   .menu{
+    padding: 20px 0;
     flex:1;
     background-color: #f0f2f5;
     .el-menu-item{
       display: flex;
-    align-items: center;
-    justify-content: center;
-
+      align-items: center;
+      justify-content: center;
     }
     .is-active{
       box-shadow:10px 10px 20px 0px  #fff !important;
-  padding: 15px 5px !important;
-  background-color:  $--color-primary !important;
-  border-radius: 10px !important;
-
+      padding: 15px 5px !important;
+      background-color:  $--color-primary !important;
+      border-radius: 10px !important;
     }
   }
 }

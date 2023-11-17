@@ -7,7 +7,7 @@
           </div>
           <el-menu
           active-text-color="#ffffff"
-            default-active="mine"
+            :default-active="activeMenu"
             class="menu"
             @select="handleMenuSelect"
           >
@@ -34,6 +34,7 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
+      activeMenu:'mine',
       defaultUI:false,
     }
   },
@@ -42,6 +43,7 @@ export default {
   },
   mounted(){
     this.$emit('route-change', "设置",4);
+    this.getActiveMenu();
   },
 
   created () {
@@ -57,6 +59,13 @@ export default {
       if(val === 5){
         this.defaultUI = true;
         this.$emit('route-change','设置',5);
+      }
+    },
+
+    getActiveMenu(){
+      const activeMenu = localStorage.getItem('activeMenu'); // 从localStorage获取选中的菜单项
+      if (activeMenu) {
+        this.activeMenu = activeMenu;
       }
     },
 
@@ -84,15 +93,12 @@ export default {
     handleMenuSelect (index) {
       switch (index) {
         case 'mine':
+          localStorage.setItem('activeMenu', 'mine');
           this.$router.push({ path: '/setting/mine' })
           break
         case 'infoset':
-          if(this.defaultUI){
-            this.$router.push({ path: '/setting/mine' })
-            this.defaultUI = false;
-          }else{
-            this.$router.push({ path: '/setting/infoset' })
-          }
+          localStorage.setItem('activeMenu', 'infoset');
+          this.$router.push({ path: '/setting/infoset' })
           break
         default:
           // 默认处理

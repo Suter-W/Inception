@@ -17,29 +17,55 @@
         <!-- <a class="btn" @click="handleAvatarChange">设置头像</a> -->
 	        <!-- <my-upload ></my-upload> -->
 	      <!-- <img :src="imgDataUrl"> -->
-        <input type="file" @change="handleAvatarChange" accept="image/*">
-        <img :src="avatarUrl" alt="Avatar" class="avatar">
+        <input type="file" @change="handleAvatarChange" accept="image/*" v-if="exitInfoOrSaveInfo === '保存设置'">
+        <!-- <img :src="avatarUrl" alt="Avatar" class="avatar" v-if="exitInfoOrSaveInfo === '编辑个人信息'"> -->
+        <el-avatar
+          class="weibo-avatar"
+          :src="avatarUrl"
+          size="large"
+          v-if="exitInfoOrSaveInfo === '编辑个人信息'"
+        ></el-avatar>
         <!-- <input type="file" @change="handleAvatarChange" accept="image/*"> -->
         <!-- <img :src="avatarUrl" alt="Avatar" class="avatar-preview"> -->
       </div>
 
       <div class="setting-item">
-        <h3>昵称设置</h3>
+        <h3>
+          <span>昵称设置</span>
+          <span>
+            <el-button 
+              icon="el-icon-star-off" 
+              circle 
+              class="save-button"
+              @click="saveUserName">
+            </el-button>
+          </span>
+        </h3>
         <input type="text" v-model="nickname" class="el-input">
       </div>
 
       <div class="setting-item">
-        <h3>个性签名设置</h3>
-        <textarea v-model="bio" class="el-textarea"></textarea>
+        <h3>          
+          <span>个性签名设置</span>
+          <span>
+            <el-button 
+              icon="el-icon-star-off" 
+              circle
+              class="save-button"
+              @click="saveUserSignature">
+            </el-button>
+          </span>
+          </h3>
+            <textarea v-model="bio" class="el-textarea"></textarea>
       </div>
 
-      <el-button @click="saveSettings" type="primary">保存设置</el-button>
+      <el-button @click="saveSettings" type="primary">{{ exitInfoOrSaveInfo }}</el-button>
     </div>
   </div>
 </template>
 
 <script>
-import { getUserInfoApi,updateAvatarApi } from '@/api/user'
+import { getUserInfoApi,updateAvatarApi, updateNameApi,updateSignatureApi } from '@/api/user'
 import { mapState } from 'vuex'
 // import 'babel-polyfill'; // es6 shim
 
@@ -51,7 +77,8 @@ export default {
       userInfo: {},
       avatarUrl: '',
       nickname: '',
-      bio: ''
+      bio: '',
+      exitInfoOrSaveInfo: '编辑个人信息'
     }
   },
 
@@ -176,9 +203,80 @@ export default {
         reader.readAsDataURL(file);
       });
     },
+    // handleAvatarChange(event) {
+    //   const file = event.target.files[0];
+    //   this.resizeImage(file,72, 72) // 调整图片大小，确保长和宽均至少为72
+    //   .then(resizedFile => {
+    //     this.avatarUrl = URL.createObjectURL(resizedFile);
+    //   });
+    // },
+    // resizeImage(file, minWidth, minHeight) {
+    //   return new Promise((resolve) => {
+    //     const img = document.createElement('img');
+    //     const canvas = document.createElement('canvas');
+    //     const ctx = canvas.getContext('2d');
+    //     img.onload = () => {
+    //       let width = img.width;
+    //       let height = img.height;
+    //       if (width < minWidth && height < minHeight) {
+    //         const ratio = Math.max(minWidth / width, minHeight / height);
+    //         width *= ratio;
+    //         height *= ratio;
+    //       }
+    //     canvas.width = width;
+    //     canvas.height = height;
+    //     ctx.drawImage(img, 0, 0, width, height);
+    //     canvas.toBlob((blob) => {
+    //       resolve(new File([blob], file.name, { type: file.type }));
+    //     }, file.type);
+    //   };
+    //   const reader = new FileReader();
+    //   reader.onload = (e) => {
+    //     img.src = e.target.result;
+    //   };
+    //   reader.readAsDataURL(file);
+    //   });
+    // },
+    // resizeImage(file, width, height) {
+    //   return new Promise((resolve) => {
+    //     const img = document.createElement('img');
+    //     const canvas = document.createElement('canvas');
+    //     const ctx = canvas.getContext('2d');
+
+    //     img.onload = () => {
+    //       canvas.width = width;
+    //       canvas.height = height;
+    //       ctx.drawImage(img, 0, 0, width, height);
+    //       canvas.toBlob((blob) => {
+    //         resolve(new File([blob], file.name, { type: file.type }));
+    //       }, file.type);
+    //     };
+    //     const reader = new FileReader();
+    //     reader.onload = (e) => {
+    //       img.src = e.target.result;
+    //     };
+    //     reader.readAsDataURL(file);
+    //   });
+    // },
+
+    // handleAvatarChange(event) {
+    //   const file = event.target.files[0];
+    //   this.resizeImage(file, 72, 72) // 调整图片大小为 72x72
+    //   .then(resizedFile => {
+    //     this.avatarUrl = URL.createObjectURL(resizedFile);
+    //   });
+    // },
+    // handleAvatarChange (event) {
+    //   // const file = event.target.files[0]
+    //   // this.avatarUrl = URL.createObjectURL(file)
+    //   const file = event.target.files[0];
+    //   this.resizeImage(file, 72, 72) // 调整图片大小为 300x300
+    //   .then(resizedFile => {
+    //     this.avatarUrl = URL.createObjectURL(resizedFile);
+    //   });
+    // },
     
     // 保存用户信息修改(后端待完善)
-    async saveSettings () {
       // console.log('保存设置')
       // console.log('昵称:', this.nickname)
       // console.log('头像URL:', this.avatarUrl)
@@ -197,10 +295,60 @@ export default {
       //     })
       //     this.handleClose()
       //   }
+
+    async saveUserName(){
+      try {
+        const formData = new FormData();
+        formData.append("userName",this.nickname);
+        formData.append("userID",this.token);
+        // alert("Hello!");
+        const res = await updateNameApi(formData)
+        if (res.code === 1) {
+          this.$message.success("昵称修改成功！")
+          // // this.actionPost.post  当前操作的微博项
+          // this.weiboPosts[this.actionPost.index].comments.push({
+          //   name: username,
+          //   avatarUrl: userAvatar,
+          //   content: this.formData.comment,
+          //   time: dayjs().format('YYYY-MM-DD HH:mm:ss')
+          // })
+          // this.handleClose()
+        }
+      } catch (e) {
+      }
+    },
+    async saveUserSignature(){
+      try {
+        const formData = new FormData();
+        formData.append("userSignature",this.bio);
+        formData.append("userID",this.token);
+        const res = await updateSignatureApi(formData)
+        if (res.code === 1) {
+          this.$message.success("个性签名修改成功！")
+          // // this.actionPost.post  当前操作的微博项
+          // this.weiboPosts[this.actionPost.index].comments.push({
+          //   name: username,
+          //   avatarUrl: userAvatar,
+          //   content: this.formData.comment,
+          //   time: dayjs().format('YYYY-MM-DD HH:mm:ss')
+          // })
+          // this.handleClose()
+        }
+      } catch (e) {
+      }
+    },
+
+    async saveSettings () {
       try{
+        if(this.exitInfoOrSaveInfo === '编辑个人信息'){
+          this.exitInfoOrSaveInfo = "保存设置"
+          return;
+        }
         const avatarResponse = await fetch(this.avatarUrl);
         const avatarBlob = await avatarResponse.blob();
+        // this.avatarUrl = avatarBlob
         const formData = new FormData();
+        // formData.append("file",avatarBlob);
         formData.append("file",avatarBlob);
         formData.append("userName",this.nickname);
         formData.append("userSignature",this.bio);
@@ -214,6 +362,7 @@ export default {
         console.log(avatarBlob);
         if(res.code === 1){
           this.$message.success("修改成功！")
+          this.exitInfoOrSaveInfo = "编辑个人信息"
           this.$emit('avatar-change',5);
         }
       }catch(e){
@@ -267,6 +416,28 @@ export default {
     font-size: 20px;
     margin-bottom: 10px;
     color: #444;
+    display: flex;
+    justify-content: space-between;
+    // position: relative;
+    span{
+      .save-button{
+        // position: absolute;
+        // right: 20px;
+        padding: 0;
+        text-align: center;
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        font-size: 16px;
+        // background-color: #409EFF;
+        background-color: #409EFF;
+        box-shadow: none;
+        color: white;
+        // margin-left: 10px;
+    }
+    }
+
   }
 }
 
@@ -283,7 +454,7 @@ textarea {
 }
 
 textarea {
-  height: 150px;
+  height: 120px;
 }
 .el-button{
   width: 100%;

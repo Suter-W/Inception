@@ -243,7 +243,7 @@ export default {
       display: inline-block;
       position: absolute;
       right: 60px;
-      width: 240px;
+      width: 320px;
       height: 100%;
       display: flex;
       justify-content: space-between;

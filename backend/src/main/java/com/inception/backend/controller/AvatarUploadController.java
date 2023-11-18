@@ -32,5 +32,17 @@ public class AvatarUploadController {
         }
         return Result.success();
     }
+
+    @PostMapping("/uploadName")
+    public Result nameUpload(@RequestParam("userName") String userName,@RequestParam("userID") Integer userID) throws IOException {
+        avatarUploadService.userNameUpload(userName,userID);
+        return Result.success();
+    }
+
+    @PostMapping("/uploadSignature")
+    public Result signatureUpload(@RequestParam("userSignature") String userSignature,@RequestParam("userID") Integer userID) throws IOException {
+        avatarUploadService.userSignatureUpload(userSignature,userID);
+        return Result.success();
+    }
 }
 

@@ -100,8 +100,8 @@ public class DreamWorldServiceImpl implements DreamWorldService {
     }
 
     @Override
-    public void updateDreamByDreamId(String dreamContent,Integer dreamID){
-        dreamWorldMapper.updateDreamByDreamId(dreamContent,dreamID);
+    public void updateDreamByDreamId(Integer dreamStatus,String dreamContent,Integer dreamID){
+        dreamWorldMapper.updateDreamByDreamId(dreamStatus,dreamContent,dreamID);
     }
 
 }

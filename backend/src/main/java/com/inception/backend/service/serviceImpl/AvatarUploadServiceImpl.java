@@ -17,4 +17,13 @@ public class AvatarUploadServiceImpl implements AvatarUploadService {
     public void avatarUpload(String fileURL,String userName,String userSignature,Integer userID) {
         uploadMapper.upload(fileURL,userName,userSignature,userID);
     }
+
+    @Override
+    public void userNameUpload(String userName,Integer userID){
+        uploadMapper.uploadName(userName,userID);
+    }
+    @Override
+    public void userSignatureUpload(String userSignature,Integer userID){
+        uploadMapper.uploadSignature(userSignature,userID);
+    }
 }

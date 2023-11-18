@@ -231,9 +231,16 @@
       </div>
     </el-dialog>
     <!-- 更新梦境弹窗 -->
-    <el-dialog :visible.sync="updateDialogVisible" width="42%" title="梦境内容">
-      <el-form ref="updateDreamForm" :model="updateDreamFormData" label-width="0px">
-        <el-form-item label="">
+    <el-dialog :visible.sync="updateDialogVisible" width="42%" title="编辑梦境">
+      <el-form ref="updateDreamForm" :model="updateDreamFormData" label-width="80px">
+        <el-form-item label="发布方式 : ">
+          <el-radio-group v-model="updateDreamFormData.choice">
+            <el-radio label="公开发布"></el-radio>
+            <el-radio label="匿名发布"></el-radio>
+            <el-radio label="私密发布"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="梦境内容 : ">
           <el-input
             type="textarea"
             :rows="6"
@@ -297,6 +304,7 @@ export default {
         comment: ''
       },
       updateDreamFormData:{
+        choice:'',
         content:''
       },
 
@@ -393,6 +401,13 @@ export default {
       this.actionPost.dreamId = this.weiboPosts[index].id
 
       this.updateDialogVisible = true;
+      if(this.weiboPosts[index].dreamStatus === 0){ 
+        this.updateDreamFormData.choice = '公开发布'
+      }else if(this.weiboPosts[index].dreamStatus === 1){
+        this.updateDreamFormData.choice = '匿名发布'
+      }else{
+        this.updateDreamFormData.choice = '私密发布'
+      }
       this.updateDreamFormData.content = this.weiboPosts[index].content
     },
     async deleteDreamById(){
@@ -532,6 +547,7 @@ export default {
 
     handleUpdateClose(){
       this.updateDreamFormData = {
+        choice: '',
         content:''
       }
       this.updateDialogVisible = false;
@@ -568,14 +584,31 @@ export default {
         // alert("Hello!");
         // alert(this.updateDreamFormData.content);
         // alert(this.actionPost.dreamId);
+        let status = 0;
+        if(this.updateDreamFormData.choice === "公开发布"){
+          status = 0;
+        }else if(this.updateDreamFormData.choice === "匿名发布"){
+          status = 1;
+        }else{
+          status = 2;
+        }
         const res = await updateDreamApi({
+          dreamStatus: status,
           dreamContent:this.updateDreamFormData.content,
           dreamID: this.actionPost.dreamId
         })
         if(res.code === 1){
           let index = this.actionPost.index
           console.log("Hello!");
+          this.weiboPosts[index].dreamStatus = status;
           this.weiboPosts[index].content = this.updateDreamFormData.content;
+          if(this.updateDreamFormData.choice === "公开发布"){
+            this.weiboPosts[index].publishClass = "";
+          }else if(this.updateDreamFormData.choice === "匿名发布"){
+            this.weiboPosts[index].publishClass = " (匿名发布)";
+          }else{
+            this.weiboPosts[index].publishClass = " (私密发布)";
+          }
           this.$message({
             message: '修改成功！',
             type: 'success'

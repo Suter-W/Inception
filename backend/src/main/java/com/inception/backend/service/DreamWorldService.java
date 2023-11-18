@@ -32,5 +32,5 @@ public interface DreamWorldService {
 
     void deleteDreamByDreamId(Integer dreamID);
 
-    void updateDreamByDreamId(String dreamContent,Integer dreamID);
+    void updateDreamByDreamId(Integer dreamStatus,String dreamContent,Integer dreamID);
 }

@@ -27,6 +27,22 @@ export const updateAvatarApi = (data) => {
   })
 }
 
+export const updateNameApi = (data) => {
+  return request({
+    url:'Upload/uploadName',
+    method: 'POST',
+    data:data
+  })
+}
+
+export const updateSignatureApi = (data) => {
+  return request({
+    url:'Upload/uploadSignature',
+    method: 'POST',
+    data:data
+  })
+}
+
 export const getUserInfoApi = (data) => {
   return request({
     url: '/User/user',

@@ -48,6 +48,14 @@ export const publishCommentApi = (data) => {
   })
 }
 
+export const updateDreamApi = (data) => {
+  return request({
+    url: '/World/updateDream',
+    method: 'POST',
+    params: data
+  })
+}
+
 export const likeApi = (data) => {
   return request({
     url: '/World/like',
@@ -82,7 +90,7 @@ export const cancelFavoriteApi = (data) => {
 
 export const deleteDreamApi = (data) => {
   return request({
-    url: 'World/deleteDream',
+    url: '/World/deleteDream',
     method: 'GET',
     params: data
   })

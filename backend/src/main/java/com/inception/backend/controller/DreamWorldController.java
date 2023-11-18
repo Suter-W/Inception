@@ -202,4 +202,9 @@ public class DreamWorldController {
         return Result.success();
     }
 
+    @PostMapping("/updateDream")
+    public Result updateDream(@RequestParam("dreamContent") String dreamContent,@RequestParam("dreamID") Integer dreamID){
+        dreamWorldService.updateDreamByDreamId(dreamContent,dreamID);
+        return Result.success();
+    }
 }

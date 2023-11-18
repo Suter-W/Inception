@@ -31,6 +31,8 @@ public interface DreamWorldMapper {
     @Update("update dream set likeCount = likeCount - 1 where dreamID = #{dreamID}")
     void likeCountMinus(Integer dreamID);
 
+    @Update("update dream set dreamContent = #{dreamContent} where dreamID = #{dreamID}")
+    void updateDreamByDreamId(String dreamContent,Integer dreamID);
     @Insert("insert into favorite (userID, dreamID, favoriteTime) values (#{userID},#{dreamID},#{favoriteTime})")
     void addFavorite(Integer dreamID, Integer userID, String favoriteTime);
 

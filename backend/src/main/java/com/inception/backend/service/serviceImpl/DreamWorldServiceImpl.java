@@ -99,4 +99,9 @@ public class DreamWorldServiceImpl implements DreamWorldService {
         dreamWorldMapper.deleteDreamByDreamId(dreamID);
     }
 
+    @Override
+    public void updateDreamByDreamId(String dreamContent,Integer dreamID){
+        dreamWorldMapper.updateDreamByDreamId(dreamContent,dreamID);
+    }
+
 }

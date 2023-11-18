@@ -18,7 +18,8 @@
               icon="el-icon-edit" 
               circle 
               tooltip="编辑" 
-              class="edit-button">
+              class="edit-button"
+              @click="openUpdateDialog(post,index)">
 
             </el-button>
           </el-tooltip>
@@ -229,7 +230,28 @@
         </el-row>
       </div>
     </el-dialog>
-
+    <!-- 更新梦境弹窗 -->
+    <el-dialog :visible.sync="updateDialogVisible" width="42%" title="梦境内容">
+      <el-form ref="updateDreamForm" :model="updateDreamFormData" label-width="0px">
+        <el-form-item label="">
+          <el-input
+            type="textarea"
+            :rows="6"
+            v-model="updateDreamFormData.content"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-row :gutter="16">
+          <el-col :span="12">
+            <el-button @click="handleUpdateClose">取消</el-button>
+          </el-col>
+          <el-col :span="12">
+            <el-button type="primary" @click="updateDreamById">确定</el-button>
+          </el-col>
+        </el-row>
+      </div>
+    </el-dialog>
     <!-- 删除梦境弹窗 -->
     <el-dialog :visible.sync="deleteDialogVisible" width="30%">
       <span style="font-size: 18px;text-indent: 2em;">确定要删除本条梦境记录吗？</span>
@@ -258,7 +280,8 @@ import {
   cancelLikeApi,
   favoriteApi,
   cancelFavoriteApi,
-  deleteDreamApi
+  deleteDreamApi,
+  updateDreamApi
 } from '@/api/dream'
 import { getUserInfoApi } from '@/api/user'
 export default {
@@ -268,9 +291,13 @@ export default {
       showOptions:false,
       dialogVisible: false,
       deleteDialogVisible:false,
+      updateDialogVisible:false,
 
       formData: {
         comment: ''
+      },
+      updateDreamFormData:{
+        content:''
       },
 
       // 单个评论
@@ -360,6 +387,14 @@ export default {
 
       this.deleteDialogVisible = true;
     },
+    openUpdateDialog(row,index){
+      this.actionPost.index = index
+      this.actionPost.post = row
+      this.actionPost.dreamId = this.weiboPosts[index].id
+
+      this.updateDialogVisible = true;
+      this.updateDreamFormData.content = this.weiboPosts[index].content
+    },
     async deleteDreamById(){
       try{
         const res = await deleteDreamApi({
@@ -381,6 +416,7 @@ export default {
 
       }
     },
+
     async loadData () {
       this.getDreams()
     },
@@ -487,6 +523,13 @@ export default {
       this.dialogVisible = false
     },
 
+    handleUpdateClose(){
+      this.updateDreamFormData = {
+        content:''
+      }
+      this.updateDialogVisible = false;
+    },
+
     async submitForm () {
       // 在这里执行提交评论的逻辑
       // 可以使用 this.formData.comment 访问评论内容
@@ -511,6 +554,30 @@ export default {
           this.handleClose()
         }
       } catch (e) {
+      }
+    },
+    async updateDreamById(){
+      try{
+        // alert("Hello!");
+        // alert(this.updateDreamFormData.content);
+        // alert(this.actionPost.dreamId);
+        const res = await updateDreamApi({
+          dreamContent:this.updateDreamFormData.content,
+          dreamID: this.actionPost.dreamId
+        })
+        if(res.code === 1){
+          let index = this.actionPost.index
+          console.log("Hello!");
+          this.weiboPosts[index].content = this.updateDreamFormData.content;
+          this.$message({
+            message: '修改成功！',
+            type: 'success'
+          });
+          this.updateDialogVisible = false;
+          this.handleUpdateClose();
+        }
+      }catch(e){
+
       }
     },
     onHover(row,index){

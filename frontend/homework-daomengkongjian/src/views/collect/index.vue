@@ -31,7 +31,8 @@
           <font-awesome-icon
             style="margin-right: 12px"
             :class="{ upActive: post.up }"
-            :style="{ fontSize: '24px'}"
+            :style="{ fontSize: '24px',
+                    cursor:'pointer'}"
             :icon="post.up ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
             @click="like(post,index)"
           />
@@ -41,14 +42,17 @@
           <font-awesome-icon
             icon="fa-regular fa-comment"
             style="margin-right: 12px"
-            :style="{ fontSize: '24px'}"
+            :style="{ fontSize: '24px',
+                    cursor:'pointer'}"
             @click="openComment(post, index)"
           />
         </el-badge>
         <font-awesome-icon
           style="margin-right: 12px"
           :class="{ starActive: post.star }"
-          :style="{ fontSize: '24px'}"
+          :style="{ fontSize: '24px',
+                  'margin-left':'24px',
+                  cursor:'pointer'}"
           :icon="post.star ? 'fa-solid fa-star' : 'fa-regular fa-star'"
           @click="star(post,index)"
         />
@@ -526,6 +530,22 @@ export default {
             this.actionPost.post.star = true
           }
         } else {
+          // await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          //   confirmButtonText: '确定',
+          //   cancelButtonText: '取消',
+          //   type: 'warning'
+          // }).then(() => {
+          //     this.$message({
+          //         type: 'success',
+          //         message: '删除成功!'
+          //       }
+          //     );
+          //   }).catch(() => {
+          //   this.$message({
+          //     type: 'info',
+          //     message: '已取消删除'
+          //   });          
+          // });
           const res = await cancelFavoriteApi({
             userID: this.token,
             dreamID: this.actionPost.dreamId

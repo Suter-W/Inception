@@ -28,7 +28,8 @@
           <font-awesome-icon
           style="margin-right: 12px"
           :class="{ upActive: post.up }"
-          :style="{ fontSize: '24px'}"
+          :style="{ fontSize: '24px',
+                  cursor:'pointer'}"
           :icon="post.up ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
           @click="like(post,index)"
           />
@@ -38,7 +39,8 @@
           class="item" :style="{marginRight:'24px',marginLeft:'24px'}">
           <font-awesome-icon
           icon="fa-regular fa-comment"
-          :style="{ fontSize: '24px'}"
+          :style="{ fontSize: '24px',
+                  cursor:'pointer'}"
           @click="openComment(post, index)"
         />
         </el-badge>
@@ -47,7 +49,9 @@
         <font-awesome-icon
           style="margin-right: 12px"
           :class="{ starActive: post.star }"
-          :style="{ fontSize: '24px','margin-left':'24px' }"
+          :style="{ fontSize: '24px',
+                  'margin-left':'24px',
+                  cursor:'pointer' }"
           :icon="post.star ? 'fa-solid fa-star' : 'fa-regular fa-star'"
           @click="star(post,index)"
         />

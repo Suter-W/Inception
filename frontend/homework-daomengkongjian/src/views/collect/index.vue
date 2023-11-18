@@ -6,58 +6,87 @@
       v-for="(post, index) in weiboPosts"
       :key="post.id"
     >
-      <div class="weibo-header">
-        <span class="weibo-username">{{ post.time }}</span>
+    <div class="weibo-header">
+        <el-avatar
+          class="weibo-avatar"
+          :src="post.avatarUrl"
+          size="large"
+        ></el-avatar>
+        <span class="weibo-username">
+          &nbsp;{{ post.username }}
+        </span>
       </div>
       <div class="weibo-content">
-        {{ post.content }}
+        &nbsp;&nbsp;{{ post.content }}
       </div>
-      <el-divider></el-divider>
+      <!-- <el-divider></el-divider> -->
       <div class="weibo-actions">
         <!-- <font-awesome-icon :icon="['far', 'heart']" style="margin-right: 12px" /> -->
         <!-- <font-awesome-icon icon="fa-solid fa-user-secret" /> -->
-        <font-awesome-icon
-          style="margin-right: 12px"
-          :class="{ upActive: post.up }"
-          :icon="post.up ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
-          @click="like"
-        />
-        <font-awesome-icon
-          icon="fa-regular fa-comment"
-          style="margin-right: 12px"
-          @click="openComment(post, index)"
-        />
+        <!-- <font-awesome-icon :icon="['far', 'heart']" style="margin-right: 12px" /> -->
+        <!-- <font-awesome-icon icon="fa-solid fa-user-secret" /> -->
+        <!-- @click="post.up = !post.up" -->
+        <el-badge :value="post.likes" :max="99" 
+          class="item" :style="{marginRight:'24px'}">
+          <font-awesome-icon
+            style="margin-right: 12px"
+            :class="{ upActive: post.up }"
+            :style="{ fontSize: '24px'}"
+            :icon="post.up ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
+            @click="like(post,index)"
+          />
+        </el-badge>
+        <el-badge :value="post.comments.length" :max="10" 
+          class="item" :style="{marginRight:'24px',marginLeft:'24px'}">
+          <font-awesome-icon
+            icon="fa-regular fa-comment"
+            style="margin-right: 12px"
+            :style="{ fontSize: '24px'}"
+            @click="openComment(post, index)"
+          />
+        </el-badge>
         <font-awesome-icon
           style="margin-right: 12px"
           :class="{ starActive: post.star }"
+          :style="{ fontSize: '24px'}"
           :icon="post.star ? 'fa-solid fa-star' : 'fa-regular fa-star'"
-          @click="star"
+          @click="star(post,index)"
         />
 
         <!-- <v-icon name="heart"  style="margin-right: 12px" :class="{'upActive':post.up}" @click="post.up=!post.up"/>
         <v-icon name="comments"  style="margin-right: 12px" />
         <v-icon name="fa-star"  :class="{'starActive':post.star}" @click="post.star=!post.star"/> -->
       </div>
-
-      <el-collapse accordion v-if="post.comments && post.comments.length > 0">
+      <el-divider class="myDivider"></el-divider>
+      <!-- <div class="commentStyle">
+        <el-collapse accordion v-if="post.comments && post.comments.length > 0">
         <el-collapse-item>
-          <!-- <template slot="title">
-            <div>
-              <div>   {{ post.comments[0].content }}</div>
-            <el-divider v-if="post.comments.length > 1"></el-divider>
-          </div>
-
-          </template>
-
           <template
-            v-if="post.comments.length > 1"
-            v-for="comment in post.comments.slice(1)"
+            v-if="post.comments.length"
+            v-for="comment in post.comments"
           >
             <div>
-              {{ comment.content }}
+              <div class="comment-head weibo-header">
+                <div class="ava-box">
+                  <el-avatar
+                    class="weibo-avatar"
+                    :src="post.avatarUrl"
+                    size="small"
+                  >
+                </el-avatar>
+                  <span class="weibo-username">{{ comment.name }}</span>
+                </div>
+                <span>{{ comment.time }}</span>
+              </div>
+              <div>{{ comment.content }}</div>
               <el-divider></el-divider>
             </div>
-          </template> -->
+          </template>
+        </el-collapse-item>
+      </el-collapse>
+      </div> -->
+      <!-- <el-collapse accordion v-if="post.comments && post.comments.length > 0">
+        <el-collapse-item>
           <template
             v-if="post.comments.length"
             v-for="comment in post.comments"
@@ -79,7 +108,43 @@
             </div>
           </template>
         </el-collapse-item>
-      </el-collapse>
+      </el-collapse> -->
+      <div class="commentStyle">
+        <div class="commentContent" v-if="post.showComments">
+          <div class="zeroComments" v-if="post.comments.length === 0">暂无评论</div>
+          <div class="haveComments" v-if="post.comments.length > 0">
+            <template
+            v-if="post.comments.length"
+            v-for="comment in post.comments"
+          >
+            <div>
+              <div class="comment-head weibo-header">
+                <div class="ava-box">
+                  <el-avatar
+                    class="weibo-avatar"
+                    :src="comment.avatarUrl"
+                    size="small"
+                  >
+                </el-avatar>
+                  <span class="weibo-username" style="font-size: 14px;">&nbsp;{{ comment.name }}</span>
+                </div>
+                <span>{{ comment.time }}</span>
+              </div>
+              <div style="text-indent: 2em;font-size:14px;font-family:'Microsoft YaHei';">{{ comment.content }}</div>
+              <el-divider class="commentDivider"></el-divider>
+            </div>
+          </template>
+          </div>
+        </div>
+        <div class="showButton" @mouseenter="onHover(post,index)" @mouseleave="onLeave(post,index)" @click="commentClick(post,index)">
+          <span class="centerInfo">
+            <i class="el-icon-caret-bottom" v-if="!post.showComments"></i>
+            <span style="font-size: 16px;" v-if="!post.showComments && post.hoverComments">&nbsp;&nbsp;显示评论</span>
+            <i class="el-icon-caret-top" v-if="post.showComments"></i>
+            <span style="font-size: 16px;" v-if="post.showComments && post.hoverComments">&nbsp;&nbsp;隐藏评论</span>
+          </span>
+        </div>
+      </div>
     </el-card>
   </div>
   <el-button
@@ -269,7 +334,15 @@ export default {
 
       for (let i = 0; i < queue.length; i++) {
         const comments = await this.getDreamCommentList(queue[i].dreamID)
-
+        if (queue[i].dreamStatus === 1){
+          if(this.token === queue[i].userID){
+            queue[i].userName = queue[i].userName + "(匿名发布)";
+          }
+          else{
+            queue[i].userName = "匿名用户";
+            queue[i].userAvatar = 'https://inception-avatar.oss-cn-shanghai.aliyuncs.com/25844be697ab452b8b0440b873cdf9cc.jpg';
+          }
+        }
         // 封装dream
         const newDream = {
           id: queue[i].dreamID,
@@ -281,7 +354,9 @@ export default {
           up: queue[i].isLike,
           star: queue[i].isFavorite,
           comments: comments,
-          commentsCount: comments.length
+          commentsCount: comments.length,
+          showComments: false,
+          hoverComments: false,
         }
 
         // 将dream装入weiboPost
@@ -299,6 +374,7 @@ export default {
         for (let i = 0; i < res.data.length; i++) {
           const comment = {
             name: await this.getCommentUserName(res.data[i].userID),
+            avatarUrl: await this.getCommentUserAvatar(res.data[i].userID),
             content: res.data[i].commentContent,
             time: res.data[i].commentTime
           }
@@ -319,6 +395,19 @@ export default {
         userName = res.data.userName
         return userName
       } catch (e) {
+      }
+    },
+
+    async getCommentUserAvatar(userID) {
+      try{
+        let userAvatar = '';
+        const res = await getUserInfoApi({
+          id:userID
+        })
+        userAvatar = res.data.userAvatar;
+        return userAvatar
+      }catch(e){
+
       }
     },
 
@@ -349,7 +438,7 @@ export default {
       // 这里仅演示如何关闭对话框
       /* 模拟评论输入交互 */
       const username = await this.getCommentUserName(this.token)
-
+      const userAvatar = await this.getCommentUserAvatar(this.token)
       try {
         const res = await publishCommentApi({
           dreamID: this.actionPost.dreamId,
@@ -360,6 +449,7 @@ export default {
           // this.actionPost.post  当前操作的微博项
           this.weiboPosts[this.actionPost.index].comments.push({
             name: username,
+            avatarUrl: userAvatar,
             content: this.formData.comment,
             time: dayjs().format('YYYY-MM-DD HH:mm:ss')
           })
@@ -369,8 +459,33 @@ export default {
       }
     },
 
+    onHover(row,index){
+      // this.actionPost.index = index;
+      // this.actionPost.post = row;
+      this.weiboPosts[index].hoverComments = true;
+    },
+    onLeave(row,index){
+      // this.actionPost.index = index;
+      // this.actionPost.post = row;
+      this.weiboPosts[index].hoverComments = false;
+    },
+    commentClick(row,index){
+      this.actionPost.index = index;
+      this.actionPost.post = row;
+      for(let i = 0;i < this.weiboPosts.length;i ++){
+        if(i != index){
+          this.weiboPosts[i].showComments = false;
+        }
+      }
+      this.weiboPosts[index].showComments = !this.weiboPosts[index].showComments;
+    },
+
     // 用户点赞
-    async like () {
+    async like (row, index) {
+      this.actionPost.index = index
+      this.actionPost.post = row
+      this.actionPost.dreamId = this.weiboPosts[index].id
+      // console.log('当前操作项信息', this.actionPost)
       try {
         if (!this.actionPost.post.up) {
           const res = await likeApi({
@@ -379,6 +494,7 @@ export default {
           })
           if (res.code === 1) {
             this.actionPost.post.up = true
+            this.actionPost.post.likes ++;
           }
         } else {
           const res = await cancelLikeApi({
@@ -387,6 +503,7 @@ export default {
           })
           if (res.code === 1) {
             this.actionPost.post.up = false
+            this.actionPost.post.likes --;
           }
         }
       } catch (e) {
@@ -394,7 +511,11 @@ export default {
     },
 
     // 用户收藏
-    async star () {
+    async star (row,index) {
+      this.actionPost.index = index
+      this.actionPost.post = row
+      this.actionPost.dreamId = this.weiboPosts[index].id
+      // console.log('当前操作项信息', this.actionPost)
       try {
         if (!this.actionPost.post.star) {
           const res = await favoriteApi({
@@ -411,6 +532,10 @@ export default {
           })
           if (res.code === 1) {
             this.actionPost.post.star = false
+            for(let i = index;i < this.weiboPosts.length - 1;i ++){
+              this.weiboPosts[i] = this.weiboPosts[i + 1];
+            }
+            this.weiboPosts.pop();
           }
         }
       } catch (e) {
@@ -421,6 +546,42 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+.commentStyle{
+  text-align: center;
+  .commentContent{
+    padding-left: 4%;
+    padding-right: 0%;
+    margin-bottom: 20px;
+    .zeroComments{
+      text-align: center;
+      padding-top: 20px;
+      height: 20px;
+      line-height: 20px;
+    }
+    .haveComments{
+      padding-top: 16px;
+      text-align: left;
+    }
+  }
+  .showButton{
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    height: 40px;
+    background-color: white;
+    border-width: 1px;
+    border-color: #e4e7ed;
+    border-style: solid;
+    line-height: 40px;
+    text-align: center;
+    .centerInfo{
+      text-align: center;
+      color:gray;
+    }
+  }
+}
+
 .comment-head {
   display: flex;
   justify-content: space-between;
@@ -528,5 +689,8 @@ export default {
     left: 22px;
     bottom: 0px;
   }
+}
+.myDivider{
+  margin-bottom: 0;
 }
 </style>

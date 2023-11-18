@@ -11,10 +11,12 @@
           :src="post.avatarUrl"
           size="large"
         ></el-avatar>
-        <span class="weibo-username">{{ post.username }}</span>
+        <span class="weibo-username">
+          &nbsp;{{ post.username }}
+        </span>
       </div>
       <div class="weibo-content">
-        {{ post.content }}
+        &nbsp;&nbsp;{{ post.content }}
       </div>
       <!-- <el-divider></el-divider> -->
       <div class="weibo-actions">
@@ -95,7 +97,7 @@
                 <div class="ava-box">
                   <el-avatar
                     class="weibo-avatar"
-                    :src="post.avatarUrl"
+                    :src="comment.avatarUrl"
                     size="small"
                   >
                 </el-avatar>
@@ -238,7 +240,6 @@ export default {
         favorites: 0,
         up: false, // 是否点赞
         comments: [], // 评论列表
-
         star: false // 是否收藏
       },
 
@@ -354,7 +355,8 @@ export default {
           const comment = {
             name: await this.getCommentUserName(res.data[i].userID),
             content: res.data[i].commentContent,
-            time: res.data[i].commentTime
+            time: res.data[i].commentTime,
+            avatarUrl: await this.getCommentUserAvatar(res.data[i].userID)
           }
           comments.push(comment)
         }
@@ -373,6 +375,19 @@ export default {
         userName = res.data.userName
         return userName
       } catch (e) {
+      }
+    },
+
+    async getCommentUserAvatar(userID) {
+      try{
+        let userAvatar = '';
+        const res = await getUserInfoApi({
+          id:userID
+        })
+        userAvatar = res.data.userAvatar;
+        return userAvatar
+      }catch(e){
+
       }
     },
 
@@ -405,6 +420,7 @@ export default {
       // 这里仅演示如何关闭对话框
       /* 模拟评论输入交互 */
       const username = await this.getCommentUserName(this.token)
+      const userAvatar = await this.getCommentUserAvatar(this.token)
 
       try {
         const res = await publishCommentApi({
@@ -416,6 +432,7 @@ export default {
           // this.actionPost.post  当前操作的微博项
           this.weiboPosts[this.actionPost.index].comments.push({
             name: username,
+            avatarUrl: userAvatar,
             content: this.formData.comment,
             time: dayjs().format('YYYY-MM-DD HH:mm:ss')
           })

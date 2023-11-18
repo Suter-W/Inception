@@ -91,5 +91,12 @@ public class DreamWorldServiceImpl implements DreamWorldService {
         return dreamWorldMapper.getDreamByDreamId(dreamId);
     }
 
+    @Override
+    public void deleteDreamByDreamId(Integer dreamID){
+        dreamWorldMapper.deleteCommentDreamByDreamId(dreamID);
+        dreamWorldMapper.deleteFavoriteDreamByDreamId(dreamID);
+        dreamWorldMapper.deleteLikeDreamByDreamId(dreamID);
+        dreamWorldMapper.deleteDreamByDreamId(dreamID);
+    }
 
 }

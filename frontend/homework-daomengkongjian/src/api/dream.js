@@ -79,3 +79,11 @@ export const cancelFavoriteApi = (data) => {
     params: data
   })
 }
+
+export const deleteDreamApi = (data) => {
+  return request({
+    url: 'World/deleteDream',
+    method: 'GET',
+    params: data
+  })
+}

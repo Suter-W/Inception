@@ -29,4 +29,6 @@ public interface DreamWorldService {
     void publishComment(Comment comment);
 
     Dream getDreamByDreamId(Integer dreamId);
+
+    void deleteDreamByDreamId(Integer dreamID);
 }

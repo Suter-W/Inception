@@ -31,7 +31,8 @@
             <el-button 
               icon="el-icon-delete" 
               circle 
-              class="delete-button">
+              class="delete-button"
+              @click="openDeleteDialog(post,index)">
 
             </el-button>
           </el-tooltip>
@@ -228,6 +229,21 @@
         </el-row>
       </div>
     </el-dialog>
+
+    <!-- 删除梦境弹窗 -->
+    <el-dialog :visible.sync="deleteDialogVisible" width="30%">
+      <span style="font-size: 18px;text-indent: 2em;">确定要删除本条梦境记录吗？</span>
+      <div slot="footer" class="dialog-footer">
+        <el-row :gutter="16">
+          <el-col :span="12">
+            <el-button @click="deleteDialogVisible = false">取消</el-button>
+          </el-col>
+          <el-col :span="12">
+            <el-button type="primary" @click="deleteDreamById">确定</el-button>
+          </el-col>
+        </el-row>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -241,7 +257,8 @@ import {
   likeApi,
   cancelLikeApi,
   favoriteApi,
-  cancelFavoriteApi
+  cancelFavoriteApi,
+  deleteDreamApi
 } from '@/api/dream'
 import { getUserInfoApi } from '@/api/user'
 export default {
@@ -250,6 +267,7 @@ export default {
     return {
       showOptions:false,
       dialogVisible: false,
+      deleteDialogVisible:false,
 
       formData: {
         comment: ''
@@ -334,6 +352,35 @@ export default {
     showMoreOptions(){
       this.showOptions = !this.showOptions
     },
+
+    openDeleteDialog(row,index){
+      this.actionPost.index = index
+      this.actionPost.post = row
+      this.actionPost.dreamId = this.weiboPosts[index].id
+
+      this.deleteDialogVisible = true;
+    },
+    async deleteDreamById(){
+      try{
+        const res = await deleteDreamApi({
+          dreamID: this.actionPost.dreamId
+        })
+        if(res.code === 1){
+          let index = this.actionPost.index
+          for(let i = index;i < this.weiboPosts.length - 1;i ++){
+              this.weiboPosts[i] = this.weiboPosts[i + 1];
+          }
+          this.weiboPosts.pop();
+          this.$message({
+            message: '删除成功！',
+            type: 'success'
+          });
+          this.deleteDialogVisible = false;
+        }
+      }catch(e){
+
+      }
+    },
     async loadData () {
       this.getDreams()
     },
@@ -417,6 +464,7 @@ export default {
 
       }
     },
+
     handleLink (linknName) {
       this.$router.push({
         name: linknName
@@ -431,6 +479,7 @@ export default {
 
       this.dialogVisible = true
     },
+
     handleClose () {
       this.formData = {
         comment: ''

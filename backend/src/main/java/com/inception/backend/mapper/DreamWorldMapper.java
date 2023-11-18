@@ -48,4 +48,17 @@ public interface DreamWorldMapper {
 
     @Select("select * from dream where dreamID = #{dreamId}")
     Dream getDreamByDreamId(Integer dreamId);
+
+    @Delete("delete from dream where dreamID = #{dreamID}")
+    void deleteDreamByDreamId(Integer dreamID);
+
+    @Delete("delete from comment where dreamID = #{dreamID}")
+    void deleteCommentDreamByDreamId(Integer dreamID);
+
+    @Delete("delete from favorite where dreamID = #{dreamID}")
+    void deleteFavoriteDreamByDreamId(Integer dreamID);
+
+    @Delete("delete from `like` where dreamID = #{dreamID}")
+    void deleteLikeDreamByDreamId(Integer dreamID);
 }
+

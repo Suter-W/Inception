@@ -9,6 +9,7 @@
         <el-avatar
           class="weibo-avatar"
           :src="post.avatarUrl"
+          :fit="fits"
           size="large"
         ></el-avatar>
         <span class="weibo-username">
@@ -209,6 +210,7 @@ import { getUserInfoApi } from '@/api/user'
 export default {
   data () {
     return {
+      fits:'fill',
       dialogVisible: false,
 
       formData: {
@@ -605,6 +607,7 @@ export default {
 
 .weibo-avatar {
   margin-right: 10px;
+  background-size: cover;
 }
 
 .weibo-username {

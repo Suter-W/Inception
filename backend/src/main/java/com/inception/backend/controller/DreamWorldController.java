@@ -71,6 +71,11 @@ public class DreamWorldController {
         return Result.success(dreams);
     }
 
+    @GetMapping("/deleteDream")
+    public Result deleteDreamById(@RequestParam Integer dreamID){
+        dreamWorldService.deleteDreamByDreamId(dreamID);
+        return Result.success();
+    }
     @GetMapping("/getDreamLog")
     public Result getDreamLog(@RequestParam Integer userID) {
         log.info("获取该用户所有梦境记录");

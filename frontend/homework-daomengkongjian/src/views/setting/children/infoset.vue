@@ -5,7 +5,21 @@
 
       <div class="setting-item">
         <h3>头像设置</h3>
-        <input type="file" @change="handleAvatarChange" accept="image/*" class="el-input">
+        <!-- <myUpload field="img"
+		        :width="300"
+		        :height="300"
+		        url="/upload"
+		        :params="params"
+		        :headers="headers"
+		        :value.sync="show"
+		        img-format="png"></myUpload> -->
+        <!-- <input type="file" @change="handleAvatarChange" accept="image/*" class="el-input"> -->
+        <!-- <a class="btn" @click="handleAvatarChange">设置头像</a> -->
+	        <!-- <my-upload ></my-upload> -->
+	      <!-- <img :src="imgDataUrl"> -->
+        <input type="file" @change="handleAvatarChange" accept="image/*">
+        <img :src="avatarUrl" alt="Avatar" class="avatar">
+        <!-- <input type="file" @change="handleAvatarChange" accept="image/*"> -->
         <!-- <img :src="avatarUrl" alt="Avatar" class="avatar-preview"> -->
       </div>
 
@@ -27,6 +41,8 @@
 <script>
 import { getUserInfoApi,updateAvatarApi } from '@/api/user'
 import { mapState } from 'vuex'
+// import 'babel-polyfill'; // es6 shim
+
 
 export default {
 
@@ -40,7 +56,8 @@ export default {
   },
 
   computed: {
-    ...mapState('user', ['token'])
+    ...mapState('user', ['token']),
+		// 'my-upload': myUpload
   },
 
   created () {
@@ -60,10 +77,104 @@ export default {
         this.bio = this.userInfo.data.userSignature
       } catch (e) {}
     },
+    // handleAvatarChange(event) {
+    //   const file = event.target.files[0];
+    //   this.resizeImage(file,72, 72) // 调整图片大小，确保长和宽均至少为72
+    //   .then(resizedFile => {
+    //     this.avatarUrl = URL.createObjectURL(resizedFile);
+    //   });
+    // },
+    // resizeImage(file, minWidth, minHeight) {
+    //   return new Promise((resolve) => {
+    //     const img = document.createElement('img');
+    //     const canvas = document.createElement('canvas');
+    //     const ctx = canvas.getContext('2d');
+    //     img.onload = () => {
+    //       let width = img.width;
+    //       let height = img.height;
+    //       if (width < minWidth && height < minHeight) {
+    //         const ratio = Math.max(minWidth / width, minHeight / height);
+    //         width *= ratio;
+    //         height *= ratio;
+    //       }
+    //     canvas.width = width;
+    //     canvas.height = height;
+    //     ctx.drawImage(img, 0, 0, width, height);
+    //     canvas.toBlob((blob) => {
+    //       resolve(new File([blob], file.name, { type: file.type }));
+    //     }, file.type);
+    //   };
+    //   const reader = new FileReader();
+    //   reader.onload = (e) => {
+    //     img.src = e.target.result;
+    //   };
+    //   reader.readAsDataURL(file);
+    //   });
+    // },
+    // resizeImage(file, width, height) {
+    //   return new Promise((resolve) => {
+    //     const img = document.createElement('img');
+    //     const canvas = document.createElement('canvas');
+    //     const ctx = canvas.getContext('2d');
 
-    handleAvatarChange (event) {
-      const file = event.target.files[0]
-      this.avatarUrl = URL.createObjectURL(file)
+    //     img.onload = () => {
+    //       canvas.width = width;
+    //       canvas.height = height;
+    //       ctx.drawImage(img, 0, 0, width, height);
+    //       canvas.toBlob((blob) => {
+    //         resolve(new File([blob], file.name, { type: file.type }));
+    //       }, file.type);
+    //     };
+    //     const reader = new FileReader();
+    //     reader.onload = (e) => {
+    //       img.src = e.target.result;
+    //     };
+    //     reader.readAsDataURL(file);
+    //   });
+    // },
+
+    // handleAvatarChange(event) {
+    //   const file = event.target.files[0];
+    //   this.resizeImage(file, 72, 72) // 调整图片大小为 72x72
+    //   .then(resizedFile => {
+    //     this.avatarUrl = URL.createObjectURL(resizedFile);
+    //   });
+    // },
+    // handleAvatarChange (event) {
+    //   // const file = event.target.files[0]
+    //   // this.avatarUrl = URL.createObjectURL(file)
+    //   const file = event.target.files[0];
+    //   this.resizeImage(file, 72, 72) // 调整图片大小为 300x300
+    //   .then(resizedFile => {
+    //     this.avatarUrl = URL.createObjectURL(resizedFile);
+    //   });
+    // },
+    handleAvatarChange(event) {
+      const file = event.target.files[0];
+      this.resizeImage(file, 80, 80) // 调整图片大小为 80 × 80
+      .then(resizedFile => {
+        this.avatarUrl = URL.createObjectURL(resizedFile);
+      });
+    },
+    resizeImage(file, width, height) {
+      return new Promise((resolve) => {
+        const img = document.createElement('img');
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        img.onload = () => {
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob((blob) => {
+            resolve(new File([blob], file.name, { type: file.type }));
+          }, file.type);
+        };
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
     },
     
     // 保存用户信息修改(后端待完善)

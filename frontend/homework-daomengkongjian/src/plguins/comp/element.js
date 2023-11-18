@@ -80,8 +80,10 @@ import {
   Popconfirm,
   Drawer
 } from 'element-ui'
+// import 'babel-polyfill'; // es6 shim
+import myUpload from '/node_modules/vue-image-crop-upload/upload-1.vue';
 
-const components = [Pagination,
+const components = [myUpload,Pagination,
   Dialog,
   Autocomplete,
   Dropdown,

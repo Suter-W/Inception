@@ -9,9 +9,12 @@
         <el-avatar
           class="weibo-avatar"
           :src="post.avatarUrl"
-          :fit="fits"
           size="large"
         ></el-avatar>
+        <!-- <el-avatar :size="large" class="weibo-avatar"
+          :src="post.avatarUrl" style="overflow: hidden;">
+          <img style="width: 80px; height: 40px; object-fit: cover;" :src="post.avatarUrl" alt="Avatar">
+        </el-avatar> -->
         <span class="weibo-username">
           &nbsp;{{ post.username }}
         </span>
@@ -607,8 +610,16 @@ export default {
 
 .weibo-avatar {
   margin-right: 10px;
-  background-size: cover;
+  // background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+// .el-avatar > img{
+//     // width: 40px;
+//     // height: 40px;
+//     object-fit: cover;
+// }
 
 .weibo-username {
   font-weight: bold;

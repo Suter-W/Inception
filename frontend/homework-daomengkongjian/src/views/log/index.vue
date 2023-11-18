@@ -7,7 +7,7 @@
       :key="post.id"
     >
       <div class="weibo-header">
-        <span class="weibo-username">{{ post.time }}</span>
+        <span class="weibo-username">{{ post.time }}{{ post.publishClass }}</span>
         <span>
           <el-tooltip 
             class="item" 
@@ -444,10 +444,17 @@ export default {
           likes: queue[i].likeCount,
           up: queue[i].isLike,
           star: queue[i].isFavorite,
+          dreamStatus:queue[i].dreamStatus,
           comments: comments,
           commentsCount: comments.length,
           showComments: false,
           hoverComments: false,
+          publishClass:''
+        }
+        if(queue[i].dreamStatus === 1){
+          newDream.publishClass = " (匿名发布)"
+        }else if(queue[i].dreamStatus === 2){
+          newDream.publishClass = " (私密发布)"
         }
 
         // 将dream装入weiboPost

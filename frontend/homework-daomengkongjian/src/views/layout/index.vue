@@ -68,6 +68,7 @@
 import { getUserInfoApi } from '@/api/user'
 import { mapMutations } from 'vuex'
 import { mapState } from 'vuex'
+// import "@/assets/points.js"
 
 export default {
   name: 'LayoutPage',
@@ -272,4 +273,5 @@ export default {
     padding: 0;
   }
 
-}</style>
+}
+</style>

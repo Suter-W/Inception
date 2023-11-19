@@ -154,6 +154,7 @@
   <el-button
       class="weibo-add-button"
       type="text"
+      style="background-color: white;"
       icon="el-icon-star-off"
       @click="showMoreOptions"
     >
@@ -166,12 +167,12 @@
           content="写梦"
           placement="bottom"
         >
-          <el-button type="text" icon="el-icon-edit" @click="handleLink('addlog')"></el-button>
+          <el-button type="text" icon="el-icon-edit" style="background-color: white;" @click="handleLink('addlog')"></el-button>
         </el-tooltip>
       </div>
       <div>
         <el-tooltip class="item" effect="light" content="主页" placement="top">
-          <el-button type="text" icon="el-icon-s-home" @click="handleLink('home')"></el-button>
+          <el-button type="text" icon="el-icon-s-home" style="background-color: white;" @click="handleLink('home')"></el-button>
         </el-tooltip>
       </div>
       <div>
@@ -180,7 +181,7 @@
           effect="light"
           content="历史梦境"
           placement="top"
-          ><el-button @click="handleLink('log')" type="text" icon="el-icon-moon-night"></el-button>
+          ><el-button @click="handleLink('log')" style="background-color: white;" type="text" icon="el-icon-moon-night"></el-button>
         </el-tooltip>
       </div>
       <div>
@@ -189,7 +190,7 @@
           effect="light"
           content="账号及设置"
           placement="bottom"
-          ><el-button type="text" icon="el-icon-setting" @click="handleLink('setting')"></el-button>
+          ><el-button type="text" icon="el-icon-setting" style="background-color: white;" @click="handleLink('setting')"></el-button>
         </el-tooltip>
       </div>
     </div>

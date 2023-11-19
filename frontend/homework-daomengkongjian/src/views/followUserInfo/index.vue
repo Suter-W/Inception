@@ -13,7 +13,7 @@
                 &nbsp;{{ nickname }}
             </span>
             <span class="selectOptions">
-                <el-button  @click="followChange"><span>{{ followInfo }}</span></el-button>
+                <el-button  @click="followChange" v-if="tokenID != userShowID"><span>{{ followInfo }}</span></el-button>
             </span>
         </div>
         <el-divider class = "myDivider"></el-divider>
@@ -71,8 +71,10 @@
                     <div class="followeesTables" v-for="(post, index) in followees" :key="post.id">
                         <div style="height: 40px;display: flex;">
                             <div class="everyFolloweesInfo">
-                                <el-avatar :src="post.userAvatarUrl" class="avatar">
-                                </el-avatar>
+                                <div>
+                                    <el-avatar :src="post.userAvatarUrl" class="avatar">
+                                    </el-avatar>
+                                </div>
                                 <span>
                                     &nbsp;{{post.name}}
                                 </span>
@@ -119,11 +121,22 @@ import {
     getFollowersApi,
     getShowUserLogDreamsApi
 } from '@/api/user'
+import {
+  getDreamsApi,
+  getDreamCommentListApi,
+  publishCommentApi,
+  likeApi,
+  cancelLikeApi,
+  favoriteApi,
+  cancelFavoriteApi
+} from '@/api/dream'
 export default {
 
   data () {
     return {
         tokenID:0,
+        tokenIDAvatarUrl:'',
+        tokenIDUserName:'',
         backgroundUrl:'https://inception-avatar.oss-cn-shanghai.aliyuncs.com/f4e61b7c78fb46baafd3fae85d9d2949.',
         userShowID: 0,
         nickname:'',
@@ -143,24 +156,36 @@ export default {
   },
 
   mounted () {
-
-  },
-
-  created () {
     this.tokenID = this.token
     const showUserId = this.$route.params.showUserId
     console.log(showUserId);
     this.userShowID = showUserId;
+    this.getTokenUserInfo();
     this.getUserInfo();
     this.getFollowees();
     this.getFollowers();
     this.getUserLogDreams();
+  },
+
+  created () {
+
     // alert(showUserId);
   },
 
   methods: {
     handleActiveInfoNameClick(tab, event) {
         console.log(tab, event);
+    },
+    async getTokenUserInfo(){
+        try{
+            const userInfo = await getUserInfoApi({
+                id: this.tokenID
+            })
+            this.tokenIDAvatarUrl = userInfo.data.userAvatar;
+            this.tokenIDUserName = userInfo.data.userName
+        }catch(e){
+
+        }
     },
     async getUserInfo () {
       try {
@@ -258,9 +283,24 @@ export default {
         if(this.followInfo === '+ 关注'){
             this.followHost(this.token,this.userShowID);
             this.followInfo = '取消关注'
+            // alert("Hello");
         }else{
             this.deleteFollowHost(this.token,this.userShowID);
             this.followInfo = '+ 关注'
+            let index = -1;
+            for(let i = 0;i < this.followers.length;i ++){
+                if(this.followers[i].id === this.tokenID){
+                    index = i;
+                    break;
+                }
+            }
+            if(index === -1){
+                return;
+            }
+            for(let i = index;i < this.followers.length - 1;i ++){
+                this.followers[i] = this.followers[i + 1];
+            }
+            this.followers.pop();
         }
     },
     async followHost(temp_userID,temp_hostID){
@@ -270,10 +310,18 @@ export default {
                 hostID: temp_hostID
             })
             if(res.code === 1){
+                const newUser = {
+                    id: this.tokenID,
+                    name:this.tokenIDUserName,
+                    userAvatarUrl: this.tokenIDAvatarUrl,
+                    IsFollowed:false,
+                    isFollowShowInfo: '取消关注'
+                }
+                this.followers.push(newUser);
                 this.$message({
                     message: '关注成功',
                     type: 'success'
-                })
+                });
             }
         }catch(e){}
     },
@@ -326,6 +374,9 @@ export default {
 <style scoped lang="scss">
 .weibo-list {
   display: flex;
+  z-index: 1;
+  opacity: 1;
+  background-color: white;
   flex-direction: column;
   align-items: center;
   max-width: 800px;

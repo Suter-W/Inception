@@ -62,5 +62,8 @@ public interface DreamWorldMapper {
 
     @Delete("delete from `like` where dreamID = #{dreamID}")
     void deleteLikeDreamByDreamId(Integer dreamID);
+
+    @Select("select * from dream where userID = #{hostID} and dreamStatus = 0")
+    List<Dream> getPublicDreams(Integer hostID);
 }
 

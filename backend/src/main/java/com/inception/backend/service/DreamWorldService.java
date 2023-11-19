@@ -33,4 +33,6 @@ public interface DreamWorldService {
     void deleteDreamByDreamId(Integer dreamID);
 
     void updateDreamByDreamId(Integer dreamStatus,String dreamContent,Integer dreamID);
+
+    List<Dream> getHostDreams(Integer hostID);
 }

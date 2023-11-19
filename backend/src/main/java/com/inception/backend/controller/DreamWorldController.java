@@ -3,6 +3,7 @@ package com.inception.backend.controller;
 
 import com.inception.backend.pojo.*;
 import com.inception.backend.service.DreamWorldService;
+import com.inception.backend.service.FollowService;
 import jakarta.annotation.security.PermitAll;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,4 +208,43 @@ public class DreamWorldController {
         dreamWorldService.updateDreamByDreamId(dreamStatus,dreamContent,dreamID);
         return Result.success();
     }
+    @PostMapping("/getHostDreams")
+    public Result getHostDreams(@RequestParam Integer userID,@RequestParam Integer hostID){
+        log.info("获取他人公开梦境");
+        List<Dream> dreams = dreamWorldService.getHostDreams(hostID);
+        List<Like> likes = dreamWorldService.userLikeList(userID);
+        List<Favorite> favorites = dreamWorldService.userFavoriteList(userID);
+        List<Integer> likeDreamIDs = new ArrayList<>();
+        List<Integer> favoriteDreamIDs = new ArrayList<>();
+        List<Integer> userIDs = new ArrayList<>();
+        for (Like like : likes) {
+            likeDreamIDs.add(like.getDreamID());
+        }
+        for(Favorite favorite : favorites){
+            favoriteDreamIDs.add(favorite.getDreamID());
+        }
+        for(Dream dream : dreams){
+            if(likeDreamIDs.contains(dream.getDreamID())){
+                dream.setIsLike(true);
+            }
+            if(favoriteDreamIDs.contains(dream.getDreamID())){
+                dream.setIsFavorite(true);
+            }
+            if(!userIDs.contains(dream.getUserID())){
+                userIDs.add(dream.getUserID());
+            }
+        }
+        List<User> users = getUserInfoByIDs(userIDs);
+        for(Dream dream : dreams){
+            for(User user : users){
+                if(Objects.equals(dream.getUserID(), user.getUserID())){
+                    dream.setUserName(user.getUserName());
+                    dream.setUserAvatar(user.getUserAvatar());
+                }
+            }
+        }
+        return Result.success(dreams);
+    }
 }
+
+

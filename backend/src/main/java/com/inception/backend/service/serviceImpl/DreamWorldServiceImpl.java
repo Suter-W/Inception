@@ -104,4 +104,9 @@ public class DreamWorldServiceImpl implements DreamWorldService {
         dreamWorldMapper.updateDreamByDreamId(dreamStatus,dreamContent,dreamID);
     }
 
+    @Override
+    public List<Dream> getHostDreams(Integer hostID) {
+        return dreamWorldMapper.getPublicDreams(hostID);
+    }
+
 }

@@ -35,8 +35,7 @@
                         <div class="logDreamElem">
                             <div style="left: 8px;font-weight: bold;">{{ post.time }}</div>
                             <div style="left: 8px;text-indent: 2em;margin-top: 12px;">{{post.content}}</div>
-                            <!-- <div style="left: 8px;">{{post.likeCount}}</div> -->
-                            <div class="icons" style="text-align: right;">
+                            <!-- <div class="icons" style="text-align: right;">
                                 <el-badge :value="post.likeCount" :max="99" 
                                     class="item" :style="{marginRight:'24px'}">
                                     <font-awesome-icon
@@ -56,10 +55,113 @@
                                     }"
                                     :icon="post.isFavorite ? 'fa-solid fa-star' : 'fa-regular fa-star'"
                                 />
-                                    <!-- :icon="post.isFavorite ? 'fa-solid fa-star' : 'fa-regular fa-star'" -->
+                            </div> -->
+                            <div class="weibo-actions">
+        <!-- <font-awesome-icon :icon="['far', 'heart']" style="margin-right: 12px" /> -->
+        <!-- <font-awesome-icon icon="fa-solid fa-user-secret" /> -->
+        <!-- @click="post.up = !post.up" -->
+        <el-badge :value="post.likes" :max="99" 
+          class="item" :style="{marginRight:'24px'}">
+          <font-awesome-icon
+          style="margin-right: 12px"
+          :class="{ upActive: post.up }"
+          :style="{ fontSize: '24px',color: post.up ? 'red' : 'gray',
+                  cursor:'pointer'}"
+          :icon="post.up ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
+          @click="like(post,index)"
+          />
+        </el-badge>
+        
+        <el-badge :value="post.comments.length" :max="10" 
+          class="item" :style="{marginRight:'24px',marginLeft:'24px'}">
+          <font-awesome-icon
+          icon="fa-regular fa-comment"
+          :style="{ fontSize: '24px',
+                  cursor:'pointer'}"
+          @click="openComment(post, index)"
+        />
+        </el-badge>
+        <!-- @click="post.star = !post.star" -->
 
-                                <!-- {{post.likeCount}} -->
-                            </div>
+        <font-awesome-icon
+          style="margin-right: 12px"
+          :class="{ starActive: post.star }"
+          :style="{ fontSize: '24px',
+                  'margin-left':'24px',
+                  color: post.star ? 'red' : 'gray',
+                  cursor:'pointer' }"
+          :icon="post.star ? 'fa-solid fa-star' : 'fa-regular fa-star'"
+          @click="star(post,index)"
+        />
+        <!-- <el-divider></el-divider> -->
+        <!-- <v-icon name="heart"  style="margin-right: 12px" :class="{'upActive':post.up}" @click="post.up=!post.up"/>
+        <v-icon name="comments"  style="margin-right: 12px" />
+        <v-icon name="fa-star"  :class="{'starActive':post.star}" @click="post.star=!post.star"/> -->
+      </div>
+      <el-divider class="myDivider"></el-divider>
+      <!-- <div class="commentStyle">
+        <el-collapse accordion v-if="post.comments && post.comments.length > 0">
+        <el-collapse-item>
+          <template
+            v-if="post.comments.length"
+            v-for="comment in post.comments"
+          >
+            <div>
+              <div class="comment-head weibo-header">
+                <div class="ava-box">
+                  <el-avatar
+                    class="weibo-avatar"
+                    :src="post.avatarUrl"
+                    size="small"
+                  >
+                </el-avatar>
+                  <span class="weibo-username">{{ comment.name }}</span>
+                </div>
+                <span>{{ comment.time }}</span>
+              </div>
+              <div>{{ comment.content }}</div>
+              <el-divider></el-divider>
+            </div>
+          </template>
+        </el-collapse-item>
+      </el-collapse>
+      </div> -->
+      <div class="commentStyle">
+        <div class="commentContent" v-if="post.showComments">
+          <div class="zeroComments" v-if="post.comments.length === 0">暂无评论</div>
+          <div class="haveComments" v-if="post.comments.length > 0">
+            <template
+            v-if="post.comments.length"
+            v-for="comment in post.comments"
+          >
+            <div>
+              <div class="comment-head weibo-header">
+                <div class="ava-box">
+                  <el-avatar
+                    class="weibo-avatar"
+                    :src="comment.avatarUrl"
+                    size="small"
+                  >
+                </el-avatar>
+                  <span class="weibo-username" style="font-size: 14px;">&nbsp;&nbsp;{{ comment.name }}</span>
+                </div>
+                <!-- <span>{{ comment.time }}</span> -->
+              </div>
+              <div style="text-indent: 2em;margin-top: 16px;font-size:14px;font-family:'Microsoft YaHei';">{{ comment.content }}</div>
+              <el-divider class="commentDivider"></el-divider>
+            </div>
+          </template>
+          </div>
+        </div>
+        <div class="showButton" @mouseenter="onHover(post,index)" @mouseleave="onLeave(post,index)" @click="commentClick(post,index)">
+          <span class="centerInfo">
+            <i class="el-icon-caret-bottom" v-if="!post.showComments"></i>
+            <span style="font-size: 16px;" v-if="!post.showComments && post.hoverComments">&nbsp;&nbsp;显示评论</span>
+            <i class="el-icon-caret-top" v-if="post.showComments"></i>
+            <span style="font-size: 16px;" v-if="post.showComments && post.hoverComments">&nbsp;&nbsp;隐藏评论</span>
+          </span>
+        </div>
+      </div>                            
                             <el-divider></el-divider>
                         </div>
                     </div>
@@ -106,6 +208,28 @@
                 </el-tab-pane>
             </el-tabs>
         </div>
+            <!-- 评论弹窗 -->
+    <el-dialog :visible.sync="dialogVisible" title="评论" width="700px">
+      <el-form ref="commentForm" :model="formData" label-width="0px">
+        <el-form-item label="">
+          <el-input
+            type="textarea"
+            :rows="6"
+            v-model="formData.comment"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-row :gutter="16">
+          <el-col :span="12">
+            <el-button @click="handleClose">取消</el-button>
+          </el-col>
+          <el-col :span="12">
+            <el-button type="primary" @click="submitForm">确定</el-button>
+          </el-col>
+        </el-row>
+      </div>
+    </el-dialog>
     </div>
 </template>
 
@@ -148,6 +272,25 @@ export default {
         followees:[],
         followers:[],
         logDreams:[],
+
+
+        dialogVisible: false,
+
+formData: {
+  comment: ''
+},
+
+// 单个评论
+comment: {
+  name: '', content: '', time: ''
+},
+        showOptions: false,
+      actionPost: {
+        // 记录当前操作的微博项
+        index: '',
+        post: null,
+        dreamId: ''
+      }
     }
   },
 
@@ -269,12 +412,18 @@ export default {
             //     hostID: queue[i].followerID,
             // })
             // let boolUserIsFollow = userIsFollow.data.isFollow
+            const comments = await this.getDreamCommentList(queue[i].dreamID)
             const newLogDream = {
+                id:queue[i].dreamID,
                 time: queue[i].dreamTime,
                 content:queue[i].dreamContent,
-                likeCount: queue[i].likeCount,
-                isLike:queue[i].isLike,
-                isFavorite:queue[i].isFavorite
+                likes: queue[i].likeCount,
+                up:queue[i].isLike,
+                star:queue[i].isFavorite,
+                comments: comments,
+                commentsCount: comments.length,
+                showComments: false,
+                hoverComments: false,
             }
             this.logDreams.push(newLogDream);
         }
@@ -366,6 +515,175 @@ export default {
             this.getFollowees();
         }
     },
+
+
+
+
+    async getDreamCommentList (dreamId) {
+      try {
+        const comments = []
+        const res = await getDreamCommentListApi({
+          dreamID: dreamId
+        })
+        for (let i = 0; i < res.data.length; i++) {
+          const comment = {
+            name: await this.getCommentUserName(res.data[i].userID),
+            content: res.data[i].commentContent,
+            time: res.data[i].commentTime,
+            avatarUrl: await this.getCommentUserAvatar(res.data[i].userID)
+          }
+          comments.push(comment)
+        }
+        return comments
+      } catch (e) {
+      }
+    },
+
+    // 获取评论的用户名
+    async getCommentUserName (userID) {
+      try {
+        let userName = ''
+        const res = await getUserInfoApi({
+          id: userID
+        })
+        userName = res.data.userName
+        return userName
+      } catch (e) {
+      }
+    },
+
+    async getCommentUserAvatar(userID) {
+      try{
+        let userAvatar = '';
+        const res = await getUserInfoApi({
+          id:userID
+        })
+        userAvatar = res.data.userAvatar;
+        return userAvatar
+      }catch(e){
+
+      }
+    },
+    openComment (row, index) {
+      this.actionPost.index = index
+      this.actionPost.post = row
+      this.actionPost.dreamId = this.logDreams[index].id
+      // console.log('当前操作项信息', this.actionPost)
+
+      this.dialogVisible = true
+    },
+    handleClose () {
+      this.formData = {
+        comment: ''
+      }
+      this.dialogVisible = false
+    },
+
+    async submitForm () {
+      // 在这里执行提交评论的逻辑
+      // 可以使用 this.formData.comment 访问评论内容
+      // 这里仅演示如何关闭对话框
+      /* 模拟评论输入交互 */
+      const username = await this.getCommentUserName(this.token)
+      const userAvatar = await this.getCommentUserAvatar(this.token)
+
+      try {
+        const res = await publishCommentApi({
+          dreamID: this.actionPost.dreamId,
+          userID: this.token,
+          commentContent: this.formData.comment
+        })
+        if (res.code === 1) {
+          // this.actionPost.post  当前操作的微博项
+          this.logDreams[this.actionPost.index].comments.push({
+            name: username,
+            avatarUrl: userAvatar,
+            content: this.formData.comment,
+            time: dayjs().format('YYYY-MM-DD HH:mm:ss')
+          })
+          this.handleClose()
+        }
+      } catch (e) {
+      }
+    },
+
+    onHover(row,index){
+      // this.actionPost.index = index;
+      // this.actionPost.post = row;
+      this.logDreams[index].hoverComments = true;
+    },
+    onLeave(row,index){
+      // this.actionPost.index = index;
+      // this.actionPost.post = row;
+      this.logDreams[index].hoverComments = false;
+    },
+
+    commentClick(row,index){
+      this.actionPost.index = index;
+      this.actionPost.post = row;
+      for(let i = 0;i < this.logDreams.length;i ++){
+        if(i != index){
+          this.logDreams[i].showComments = false;
+        }
+      }
+      this.logDreams[index].showComments = !this.logDreams[index].showComments;
+    },
+
+    // 用户点赞
+    async like (row,index) {
+      this.actionPost.index = index
+      this.actionPost.post = row
+      this.actionPost.dreamId = this.logDreams[index].id
+      try {
+        if (!this.actionPost.post.up) {
+          const res = await likeApi({
+            userID: this.token,
+            dreamID: this.actionPost.dreamId
+          })
+          if (res.code === 1) {
+            this.actionPost.post.up = true
+            this.actionPost.post.likes ++;
+          }
+        } else {
+          const res = await cancelLikeApi({
+            userID: this.token,
+            dreamID: this.actionPost.dreamId
+          })
+          if (res.code === 1) {
+            this.actionPost.post.up = false
+            this.actionPost.post.likes --;
+          }
+        }
+      } catch (e) {
+      }
+    },
+
+    // 用户收藏
+    async star (row,index) {
+      this.actionPost.index = index
+      this.actionPost.post = row
+      this.actionPost.dreamId = this.logDreams[index].id
+      try {
+        if (!this.actionPost.post.star) {
+          const res = await favoriteApi({
+            userID: this.token,
+            dreamID: this.actionPost.dreamId
+          })
+          if (res.code === 1) {
+            this.actionPost.post.star = true
+          }
+        } else {
+          const res = await cancelFavoriteApi({
+            userID: this.token,
+            dreamID: this.actionPost.dreamId
+          })
+          if (res.code === 1) {
+            this.actionPost.post.star = false
+          }
+        }
+      } catch (e) {
+      }
+    }
     
   }
 }
@@ -513,5 +831,44 @@ export default {
     // ::v-deep .el-tab-pane{
     //     width: 100%;
     // }
+}
+
+.weibo-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.commentStyle{
+  text-align: center;
+  .commentContent{
+    padding-left: 4%;
+    padding-right: 0%;
+    margin-bottom: 20px;
+    .zeroComments{
+      text-align: center;
+      padding-top: 20px;
+      height: 20px;
+      line-height: 20px;
+    }
+    .haveComments{
+      padding-top: 16px;
+      text-align: left;
+    }
+  }
+  .showButton{
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    height: 40px;
+    background-color: white;
+    border-width: 1px;
+    border-color: #e4e7ed;
+    border-style: solid;
+    line-height: 40px;
+    text-align: center;
+    .centerInfo{
+      text-align: center;
+      color:gray;
+    }
+  }
 }
 </style>

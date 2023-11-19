@@ -50,3 +50,51 @@ export const getUserInfoApi = (data) => {
     params: data
   })
 }
+
+export const isFollowApi = (data) => {
+  return request({
+    url: '/Follow/isFollow',
+    method: 'GET',
+    params: data
+  })
+}
+
+export const followApi = (data) => {
+  return request({
+    url: '/Follow/follow',
+    method: 'POST',
+    params: data,
+  })
+}
+
+export const deleteFollowApi = (data) => {
+  return request({
+    url: '/Follow/cancelFollow',
+    method: 'POST',
+    params: data,
+  })
+}
+
+export const getFolloweesApi = (data) => {
+  return request({
+    url: 'Follow/getFollowList',
+    method: 'POST',
+    params: data,
+  })
+}
+
+export const getFollowersApi = (data) => {
+  return request({
+    url: 'Follow/getFanList',
+    method: 'POST',
+    params: data,
+  })
+}
+
+export const getShowUserLogDreamsApi = (data) => {
+  return request({
+    url:'World/getHostDreams',
+    method:'POST',
+    params:data,
+  })
+}

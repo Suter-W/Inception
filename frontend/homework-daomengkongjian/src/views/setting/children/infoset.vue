@@ -178,6 +178,7 @@ export default {
     // },
     handleAvatarChange(event) {
       const file = event.target.files[0];
+      // this.avatarUrl = URL.createObjectURL(file);
       this.resizeImage(file, 80, 80) // 调整图片大小为 80 × 80
       .then(resizedFile => {
         this.avatarUrl = URL.createObjectURL(resizedFile);

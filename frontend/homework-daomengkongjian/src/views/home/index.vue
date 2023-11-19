@@ -6,11 +6,13 @@
       :key="post.id"
     >
       <div class="weibo-header">
-        <el-avatar
-          class="weibo-avatar"
-          :src="post.avatarUrl"
-          size="large"
-        ></el-avatar>
+        <div @click="goToUserInfo(post,index)" style="cursor: pointer;">
+          <el-avatar
+            class="weibo-avatar"
+            :src="post.avatarUrl"
+            size="large"
+          ></el-avatar>
+        </div>
         <!-- <el-avatar :size="large" class="weibo-avatar"
           :src="post.avatarUrl" style="overflow: hidden;">
           <img style="width: 80px; height: 40px; object-fit: cover;" :src="post.avatarUrl" alt="Avatar">
@@ -308,6 +310,17 @@ export default {
   },
 
   methods: {
+    goToUserInfo(post,index){
+      if(this.weiboPosts[index].status != 0){
+        return;
+      }
+      const goToUserId = this.weiboPosts[index].userID;
+      this.$router.push({
+        name: 'followUserInfo', 
+        params: { showUserId: goToUserId }
+      });
+      // alert("Hello");
+    },
     async loadData () {
       this.getDreams()
     },
@@ -336,7 +349,9 @@ export default {
 
         // 封装dream
         const newDream = {
+          status: queue[i].dreamStatus,
           id: queue[i].dreamID,
+          userID:queue[i].userID,
           avatarUrl: queue[i].userAvatar,
           username: queue[i].userName,
           content: queue[i].dreamContent,

@@ -40,6 +40,11 @@ const routes = [
         component: () => import('@/views/home')
       },
       {
+        path: '/followUserInfo',
+        name:'followUserInfo',
+        component:() => import('@/views/followUserInfo')
+      },
+      {
         path: '/addlog',
         name:'addlog',
         component: () => import('@/views/addlog')
